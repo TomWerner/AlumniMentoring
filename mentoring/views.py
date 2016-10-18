@@ -1,9 +1,8 @@
+from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.contrib.auth import login
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
-
-from mentoring.forms import UserCreationForm
 
 
 def create_new_user(request):
@@ -18,3 +17,7 @@ def create_new_user(request):
         form = UserCreationForm()
 
     return render(request, 'new_user.html', {'form': form})
+
+
+def home(request):
+    return render(request, 'UIHonorsMentorInput.html')

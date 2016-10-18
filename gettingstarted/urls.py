@@ -10,11 +10,14 @@ admin.autodiscover()
 from django.conf import settings
 from django.conf.urls.static import static
 
+from mentoring.views import home
+
 # Examples:
 # url(r'^$', 'gettingstarted.views.home', name='home'),
 # url(r'^blog/', include('blog.urls')),
 
 urlpatterns = [
+    url(r'^$', home),
     url(r'^admin/', admin.site.urls),
 
     # Default django stuff
