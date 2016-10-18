@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block content %}
+    <div class="container">
+        <h2>Leaderboard for {{ contest.title }}</h2>
+
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Team Name</th>
+                <th>Questions Completed</th>
+                <th>Total Time (with penalty)</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for obj in team_list %}
+                <tr>
+                    <td>{{ obj.team_name }}</td>
+                    <td>{{ obj.questions_correct }}</td>
+                    <td>{{ obj.total_time }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% endblock %}

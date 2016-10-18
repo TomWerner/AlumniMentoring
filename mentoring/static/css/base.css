@@ -1,0 +1,9 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    background: #f6f6f6;
+}
+
+.top-message {
+    text-align: center;
+    margin-top: -20px;
+}

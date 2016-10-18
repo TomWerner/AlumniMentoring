@@ -1,0 +1,62 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PSP Mentoring</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="{% static 'bower_components/bootstrap/dist/css/bootstrap.min.css' %}"/>
+    <script src="{% static 'bower_components/jquery/dist/jquery.min.js' %}"></script>
+    <script src="{% static 'bower_components/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}"/>
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    {% block head %}{% endblock %}
+</head>
+<body>
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">PSP Mentoring</a>
+        </div>
+        <div class="collapse navbar-collapse" id="myNavbar">
+            <ul class="nav navbar-nav">
+                <li class="{% if current_tab == 'home' %} active{% endif %}">
+                    <a href="/"><span class="glyphicon glyphicon-home"></span> Home</a>
+                </li>
+                <li class="{% if current_tab == 'rules' %} active{% endif %}">
+                    <a href="/rules">Rules</a>
+                </li>
+                <li class="{% if current_tab == 'questions' %} active{% endif %}">
+                    <a href="/questions">Questions</a>
+                </li>
+                <li class="{% if current_tab == 'leaderboard' %} active{% endif %}">
+                    <a href="/leaderboard">Leaderboard</a>
+                </li>
+                <li class="{% if current_tab == 'clarify' %} active{% endif %}">
+                    <a href="/clarify">Clarification</a>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="/logout">Logout</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+{% if messages %}
+    {% for message in messages %}
+        {% if message.level == 40 %} {# Error #}
+        <div class="alert alert-danger top-message"><strong>Error!</strong>&nbsp;{{ message }}</div>
+        {% endif %}
+    {% endfor %}
+{% endif %}
+
+
+{% block content %}{% endblock %}
+
+</body>
+</html>

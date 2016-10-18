@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block head %}
+    {% load staticfiles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/clarify.css' %}"/>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <h2 class="col-md-offset-2 col-md-8">Question Clarification</h2>
+        </div>
+        {% for request in requests %}
+            <div class="row">
+                <div class="col-md-offset-2 col-md-8">
+                    <h3>For:
+                        <a href="/question/{{ request.question.id }}">
+                            {{ request.question.title }}
+                        </a>
+                        &nbsp;
+                        {% if request.clarificationanswer_set.count == 0 and is_admin %}
+                            <b>(Unanswered)</b>
+                        {% endif %}
+                    </h3>
+                    <p><b>Question:</b><br>{{ request.body|linebreaksbr }}</p>
+                    {% if request.clarificationanswer_set.count > 0 %}
+                        <span><b>Answer:</b><br></span>
+                        {% for answer in request.clarificationanswer_set.all %}
+                            <p>{{ answer.body|linebreaksbr }}</p>
+                        {% endfor %}
+                    {% endif %}
+                    {% if is_admin %}
+                        <form name="clarification_answer" action="/add_clarification_answer" class="form">
+                            <textarea rows="2"
+                                      name="answer"
+                                      class="form-control"
+                                      placeholder="Clarification Answer"></textarea>
+                            <button class="btn btn-primary reply-button" type="submit">Reply</button>
+                            <input type="hidden" value="{{ request.id }}" name="request_id">
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+{% endblock %}
