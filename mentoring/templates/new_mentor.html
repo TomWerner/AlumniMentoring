@@ -21,6 +21,10 @@
             <div class="row" id="contact-info">
                 {{ contact_form|crispy }}
             </div>
+            <h3>Preferences</h3>
+            <div class="row" id="preference-info">
+                {{ preference_form|crispy }}
+            </div>
             <h3>Education History (max 3)</h3>
             <div class="row" id="education-info">
                 {{ education_form|crispy }}
@@ -51,6 +55,7 @@
         $(document).ready(function () {
             $('#mentor-info').find('> .form-group').addClass('col-md-4');
             $('#contact-info').find('>> .form-group').addClass('col-md-3');
+            $('#preference-info').find('>> .form-group').addClass('col-md-3');
             $('#div_id_mentorcontactinformation-0-linkedin_url').removeClass('col-md-3').addClass('col-md-4');
             $('#div_id_mentorcontactinformation-0-facebook_url').removeClass('col-md-3').addClass('col-md-4');
             $('#div_id_mentorcontactinformation-0-personal_url').removeClass('col-md-3').addClass('col-md-4');

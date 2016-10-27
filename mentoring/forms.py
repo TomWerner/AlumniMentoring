@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.forms import ModelForm, inlineformset_factory
 
 from mentoring.models import Mentor, MentorContactInformation, MentorEducation, MentorEmployment, \
-    MenteeContactInformation, Mentee, MenteeEducation
+    MenteeContactInformation, Mentee, MenteeEducation, MenteePreference, MentorPreference
 
 
 class MentorForm(ModelForm):
@@ -30,8 +30,20 @@ MentorEducationFormSet = inlineformset_factory(Mentor, MentorEducation,
 
 MentorEmploymentFormSet = inlineformset_factory(Mentor, MentorEmployment,
                                                 fields=('company',
-                                                    'title',
-                                                    'description'))
+                                                        'title',
+                                                        'description'))
+
+
+MentorPreferenceFormSet = inlineformset_factory(Mentor, MentorPreference,
+                                                fields=('first_choice',
+                                                        'second_choice',
+                                                        'third_choice',
+                                                        'preferred_communication'),
+                                                labels={'first_choice':'Primary Mentoring Goal',
+                                                        'second_choice': 'Goal 2',
+                                                        'third_choice': 'Goal 3',
+                                                        'preferred_communication': 'Preferred Communication'})
+
 
 
 class MenteeForm(ModelForm):
@@ -55,3 +67,13 @@ MenteeEducationFormSet = inlineformset_factory(Mentee, MenteeEducation,
                                                        'major2',
                                                        'minor1',
                                                        'minor2',))
+
+MenteePreferenceFormSet = inlineformset_factory(Mentee, MenteePreference,
+                                                fields=('first_choice',
+                                                        'second_choice',
+                                                        'third_choice',
+                                                        'preferred_communication'),
+                                                labels={'first_choice':'Primary Mentoring Goal',
+                                                        'second_choice': 'Goal 2',
+                                                        'third_choice': 'Goal 3',
+                                                        'preferred_communication': 'Preferred Communication'})

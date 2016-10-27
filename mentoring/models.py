@@ -125,13 +125,20 @@ class MentorMenteePairs(models.Model):
     comments = models.TextField()
 
 
-class MenteePreference:
-    mentee = models.ForeignKey(Mentee)
+class MenteePreference(models.Model):
+    mentee = models.OneToOneField(Mentee, on_delete=models.CASCADE)
     first_choice = models.CharField(max_length=1, choices=mentoring_categories)
-    second_choice = models.CharField(max_length=1, choices=mentoring_categories)
-    third_choice = models.CharField(max_length=1, choices=mentoring_categories)
+    second_choice = models.CharField(max_length=1, choices=mentoring_categories, null=True, blank=True)
+    third_choice = models.CharField(max_length=1, choices=mentoring_categories, null=True, blank=True)
     preferred_communication = models.CharField(max_length=1, choices=communication_options)
 
+
+class MentorPreference(models.Model):
+    mentor = models.OneToOneField(Mentor, on_delete=models.CASCADE)
+    first_choice = models.CharField(max_length=1, choices=mentoring_categories)
+    second_choice = models.CharField(max_length=1, choices=mentoring_categories, null=True, blank=True)
+    third_choice = models.CharField(max_length=1, choices=mentoring_categories, null=True, blank=True)
+    preferred_communication = models.CharField(max_length=1, choices=communication_options)
 
 
 
