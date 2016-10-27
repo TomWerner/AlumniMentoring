@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container">
+        <h2>Mentor Sign-up</h2>
+        <h5>Thank you for signing up to be an honor's mentor!</h5>
+        <h5>
+            Your submission will be recorded and vetted by honors
+            staff. You will be contacted through your primary email when we have a match.
+        </h5>
+        <br>
+
+        {% load crispy_forms_tags %}
+        <form method="post" href="/newmentor">
+            {% csrf_token %}
+            <h3>Primary Information</h3>
+            <div class="row" id="mentor-info">
+                {{ form|crispy }}
+            </div>
+            <h3>Contact Information</h3>
+            <div class="row" id="contact-info">
+                {{ contact_form|crispy }}
+            </div>
+            <h3>Education History (max 3)</h3>
+            <div class="row" id="education-info">
+                {{ education_form|crispy }}
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <button id="add-school" class="btn float-right">Add Another School</button>
+                </div>
+            </div>
+            <h3>Employment History (max 3)</h3>
+            <div class="row" id="employment-info">
+                {{ employment_form|crispy }}
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <button id="add-employer" class="btn float-right">Add Another Employer</button>
+                </div>
+            </div>
+            <br>
+            <br>
+            <br>
+            <br>
+            <input type="submit" class="btn btn-primary" value="Submit"/>
+        </form>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            $('#mentor-info').find('> .form-group').addClass('col-md-4');
+            $('#contact-info').find('>> .form-group').addClass('col-md-3');
+            $('#div_id_mentorcontactinformation-0-linkedin_url').removeClass('col-md-3').addClass('col-md-4');
+            $('#div_id_mentorcontactinformation-0-facebook_url').removeClass('col-md-3').addClass('col-md-4');
+            $('#div_id_mentorcontactinformation-0-personal_url').removeClass('col-md-3').addClass('col-md-4');
+            $('#div_id_mentorcontactinformation-0-street_address').removeClass('col-md-3').addClass('col-md-4');
+            $('#div_id_mentorcontactinformation-0-city').removeClass('col-md-3').addClass('col-md-4');
+            $('#div_id_mentorcontactinformation-0-state').removeClass('col-md-3').addClass('col-md-4');
+            $('.checkboxinput').parent().hide();
+            $('#id_mentoreducation_set-0-graduation_year').attr('placeholder', 'mm/dd/yyyy');
+            $('#id_mentoreducation_set-1-graduation_year').attr('placeholder', 'mm/dd/yyyy');
+            $('#id_mentoreducation_set-2-graduation_year').attr('placeholder', 'mm/dd/yyyy');
+
+            $('#education-info').find('>> .form-group').addClass('col-md-4');
+            var education_count = 1;
+            var educationForms = $('#education-info').find('.multiField');
+            educationForms.addClass('col-md-12').css('padding', '0');
+            for (var i = 1; i < educationForms.length; i++)
+                $(educationForms[i]).css('margin-top', '30px').hide();
+
+            $('#employment-info').find('>> .form-group').addClass('col-md-4');
+            var employment_count = 1;
+            var employmentForms = $('#employment-info').find('.multiField');
+            employmentForms.addClass('col-md-12').css('padding', '0');
+            for (var i = 1; i < employmentForms.length; i++)
+                $(employmentForms[i]).css('margin-top', '30px').hide();
+
+            $('#add-employer').click(function(e) {
+                e.preventDefault();
+                $(employmentForms[employment_count]).show();
+                employment_count += 1;
+                if (employment_count == 3) {
+                    $(this).hide();
+                }
+            });
+            $('#add-school').click(function(e) {
+                e.preventDefault();
+                $(educationForms[education_count]).show();
+                education_count += 1;
+                if (education_count == 3) {
+                    $(this).hide();
+                }
+            })
+        });
+    </script>
+
+{% endblock %}

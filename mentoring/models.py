@@ -40,28 +40,28 @@ communication_options = (
 
 
 class Mentor(models.Model):
-    user = models.ForeignKey(User)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     gender = models.CharField(max_length=1, choices=genders)
     active = models.BooleanField(default=True)
+    approved = models.BooleanField(default=False)
 
 
 class Mentee(models.Model):
-    user = models.ForeignKey(User)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     gender = models.CharField(max_length=1, choices=genders)
     active = models.BooleanField(default=True)
+    approved = models.BooleanField(default=False)
 
 
 class MentorContactInformation(models.Model):
     mentor = models.OneToOneField(Mentor, on_delete=models.CASCADE)
     primary_phone = models.CharField(max_length=20)
-    secondary_phone = models.CharField(max_length=20)
+    secondary_phone = models.CharField(max_length=20, null=True, blank=True)
 
     primary_email = models.EmailField()
-    secondary_email = models.EmailField()
+    secondary_email = models.EmailField(null=True, blank=True)
 
     linkedin_url = models.CharField(max_length=100, null=True, blank=True)
     facebook_url = models.CharField(max_length=100, null=True, blank=True)

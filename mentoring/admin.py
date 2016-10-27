@@ -42,7 +42,9 @@ class MentorAdmin(admin.ModelAdmin):
         'first_name',
         'last_name',
         'gender',
-        'active')
+        'active',
+        'approved'
+    )
     list_display = ('first_name', 'last_name', 'active')
 
     inlines = [
@@ -81,7 +83,9 @@ class MenteeAdmin(admin.ModelAdmin):
         'first_name',
         'last_name',
         'gender',
-        'active')
+        'active',
+        'approved'
+    )
     list_display = ('first_name', 'last_name', 'active')
 
     inlines = [

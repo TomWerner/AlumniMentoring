@@ -38,7 +38,8 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'mentoring'
+    'mentoring',
+    'crispy_forms'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -141,3 +142,5 @@ AUTHENTICATION_BACKENDS = (
     # ... your other backends
     'django.contrib.auth.backends.ModelBackend',
 )
+
+CRISPY_TEMPLATE_PACK = 'bootstrap3'
