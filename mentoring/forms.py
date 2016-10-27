@@ -45,7 +45,6 @@ MentorPreferenceFormSet = inlineformset_factory(Mentor, MentorPreference,
                                                         'preferred_communication': 'Preferred Communication'})
 
 
-
 class MenteeForm(ModelForm):
     class Meta:
         model = Mentee

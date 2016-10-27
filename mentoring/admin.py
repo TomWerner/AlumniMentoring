@@ -36,6 +36,16 @@ class MentorCareerInline(admin.TabularInline):
     )
 
 
+class MentorPreferenceInline(admin.TabularInline):
+    model = MentorPreference
+    fields = (
+        'first_choice',
+        'second_choice',
+        'third_choice',
+        'preferred_communication'
+    )
+
+
 @admin.register(Mentor)
 class MentorAdmin(admin.ModelAdmin):
     fields = (
@@ -50,7 +60,8 @@ class MentorAdmin(admin.ModelAdmin):
     inlines = [
         MentorContactInline,
         MentorEducationInline,
-        MentorCareerInline
+        MentorCareerInline,
+        MentorPreferenceInline,
     ]
 
 
@@ -77,6 +88,16 @@ class MenteeEducationInline(admin.TabularInline):
     )
 
 
+class MenteePreferenceInline(admin.TabularInline):
+    model = MenteePreference
+    fields = (
+        'first_choice',
+        'second_choice',
+        'third_choice',
+        'preferred_communication'
+    )
+
+
 @admin.register(Mentee)
 class MenteeAdmin(admin.ModelAdmin):
     fields = (
@@ -91,4 +112,5 @@ class MenteeAdmin(admin.ModelAdmin):
     inlines = [
         MenteeContactInline,
         MenteeEducationInline,
+        MenteePreferenceInline,
     ]

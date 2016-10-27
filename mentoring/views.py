@@ -43,7 +43,7 @@ def new_mentor(request):
         education_form = MentorEducationFormSet(request.POST)
         preference_form = MentorPreferenceFormSet(request.POST)
 
-        if mentor_form.is_valid() and contact_form.is_valid() and employment_form.is_valid() and education_form.is_valid():
+        if mentor_form.is_valid() and contact_form.is_valid() and employment_form.is_valid() and education_form.is_valid() and preference_form.is_valid():
             mentor = mentor_form.save()
             contact_form.instance = mentor
             contact_form.save()
