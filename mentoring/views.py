@@ -117,7 +117,7 @@ def honors_admin_home(request):
 
     num_mentees = Mentee.objects.filter(approved=True).count()
     num_active_mentees = Mentee.objects.filter(approved=True, mentormenteepairs__isnull=False).count()
-    num_pending_mentees = Mentor.objects.filter(approved=False).count()
+    num_pending_mentees = Mentee.objects.filter(approved=False).count()
 
     return render(request, 'honors_admin_home.html', {
         'num_mentors': num_mentors,
