@@ -1,11 +1,8 @@
-# Hawkeye Challenge
-
-An online code editing, submission, and judging application designed to be used for the University of Iowa ACM chapter's
-annual Hawkeye Challenge, a high school programming competition.
+# Iowa Alumni Mentoring
 
 ## Running locally
 ```sh
-$ sudo pip install -r requirements.txt
+$ pip install -r requirements.txt
 $ npm install bower
 $ bower install
 $ python manage.py migrate
@@ -24,7 +21,4 @@ $ heroku run python manage.py collectstatic
 
 # First time only
 $ heroku run python manage.py createsuperuser
-$ heroku run python manage.py loaddata starter_code.json
-$ heroku run python manage.py loaddata starter_contest.json
-$ heroku run python manage.py loaddata starter_rules.json
 ```

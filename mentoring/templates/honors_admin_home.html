@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container">
+        <h1>Honors Mentoring Admin Home</h1>
+        <div class="row">
+            <div class="col-md-6">
+                <h2><a href="mentors/">Mentors</a></h2>
+                <h4>Total: {{ num_mentors }}</h4>
+                <h4>Active: {{ num_active_mentors }}</h4>
+                <h4>Pending approval: {{ num_pending_mentors }}</h4>
+            </div>
+            <div class="col-md-6">
+                <h2><a href="mentors/">Mentees</a></h2>
+                <h4>Total: {{ num_mentees }}</h4>
+                <h4>Active: {{ num_active_mentees }}</h4>
+                <h4>Pending approval: {{ num_pending_mentees }}</h4>
+            </div>
+        </div>
+    </div>
+{% endblock %}

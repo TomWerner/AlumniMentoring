@@ -20,6 +20,13 @@ urlpatterns = [
     url(r'^$', views.home),
     url(r'^admin/', admin.site.urls),
 
+
+    url(r'^honorsAdmin/$', views.honors_admin_home),
+    url(r'^honorsAdmin/mentors/$', views.honors_admin_mentors),
+    url(r'^honorsAdmin/mentees/$', views.honors_admin_mentees),
+    url(r'^honorsAdmin/export/$', views.export),
+
+
     # Default django stuff
     url(r'^accounts/logout/$', 'django.contrib.auth.views.logout'),
     url(r'^accounts/login/$', 'django.contrib.auth.views.login', {'template_name': 'admin/login.html'}),

@@ -1,7 +1,11 @@
+import csv
+
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.contrib.auth import login
 from django.forms import inlineformset_factory
+from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 
@@ -100,3 +104,91 @@ def new_mentee(request):
         'education_form': education_form,
         'preference_form': preference_form
     })
+
+
+@login_required
+def honors_admin_home(request):
+    if not request.user.is_superuser:
+        return HttpResponseRedirect('/', status=403)
+
+    num_mentors = Mentor.objects.filter(approved=True).count()
+    num_active_mentors = Mentor.objects.filter(approved=True, mentormenteepairs__isnull=False).count()
+    num_pending_mentors = Mentor.objects.filter(approved=False).count()
+
+    num_mentees = Mentee.objects.filter(approved=True).count()
+    num_active_mentees = Mentee.objects.filter(approved=True, mentormenteepairs__isnull=False).count()
+    num_pending_mentees = Mentor.objects.filter(approved=False).count()
+
+    return render(request, 'honors_admin_home.html', {
+        'num_mentors': num_mentors,
+        'num_active_mentors': num_active_mentors,
+        'num_pending_mentors': num_pending_mentors,
+        'num_mentees': num_mentees,
+        'num_active_mentees': num_active_mentees,
+        'num_pending_mentees': num_pending_mentees,
+    })
+
+
+def honors_admin_mentors(request):
+    mentors = Mentor.objects.all()
+    return render(request, 'honors_admin_mentors.html', {
+        'mentors': mentors
+    })
+
+
+def honors_admin_mentees(request):
+    mentees = Mentee.objects.all()
+    return render(request, 'honors_admin_mentees.html', {
+        'mentees': mentees
+    })
+
+
+def export(request):
+    response = HttpResponse(content_type='text/html')
+    response['Content-Disposition'] = 'attachment; filename="mentoring.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow(['Mentor/Mentee', 'First Name', 'Last Name', 'Gender', 'Approved', 'Active',
+                     'Primary Phone', 'Secondary Phone', 'Primary Email', 'Secondary email', 'Linkedin url',
+                     'Facebook url', 'Personal url', 'Street Address', 'City', 'State',
+                     ])
+    for mentor in Mentor.objects.filter(mentorcontactinformation__isnull=False):
+        writer.writerow([
+            'Mentor',
+            mentor.first_name,
+            mentor.last_name,
+            mentor.get_gender_display(),
+            mentor.approved,
+            mentor.active,
+            mentor.mentorcontactinformation.primary_phone,
+            mentor.mentorcontactinformation.secondary_phone,
+            mentor.mentorcontactinformation.primary_email,
+            mentor.mentorcontactinformation.secondary_email,
+            mentor.mentorcontactinformation.linkedin_url,
+            mentor.mentorcontactinformation.facebook_url,
+            mentor.mentorcontactinformation.personal_url,
+            mentor.mentorcontactinformation.street_address,
+            mentor.mentorcontactinformation.city,
+            mentor.mentorcontactinformation.state,
+        ])
+    for mentee in Mentee.objects.filter(menteecontactinformation__isnull=False):
+        writer.writerow([
+            'Mentee',
+            mentee.first_name,
+            mentee.last_name,
+            mentee.get_gender_display(),
+            mentee.approved,
+            mentee.active,
+            mentee.menteecontactinformation.primary_phone,
+            mentee.menteecontactinformation.secondary_phone,
+            mentee.menteecontactinformation.primary_email,
+            mentee.menteecontactinformation.secondary_email,
+            mentee.menteecontactinformation.linkedin_url,
+            mentee.menteecontactinformation.facebook_url,
+            mentee.menteecontactinformation.personal_url,
+            mentee.menteecontactinformation.street_address,
+            mentee.menteecontactinformation.city,
+            mentee.menteecontactinformation.state,
+        ])
+
+    return response
