@@ -1,16 +1,20 @@
 import csv
+import datetime
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.contrib.auth import login
+from django.db.models import Q
 from django.forms import inlineformset_factory
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
-from django.shortcuts import render, redirect
+from django.http import JsonResponse
+from django.shortcuts import render, redirect, get_object_or_404
+from django.template.loader import render_to_string
 
 from mentoring.forms import *
-from mentoring.models import Mentor, MentorContactInformation
+from mentoring.models import Mentor, MentorContactInformation, MentorMenteePairs
 
 
 def create_new_user(request):
@@ -112,33 +116,58 @@ def honors_admin_home(request):
         return HttpResponseRedirect('/', status=403)
 
     num_mentors = Mentor.objects.filter(approved=True).count()
-    num_active_mentors = Mentor.objects.filter(approved=True, mentormenteepairs__isnull=False).count()
-    num_pending_mentors = Mentor.objects.filter(approved=False).count()
+
+    # Mentors can be in multiple pairs - we only want active pairs, and we only want a unique count
+    num_active_mentors = len(set(
+        Mentor.objects.filter(approved=True, mentormenteepairs__isnull=False,
+                              mentormenteepairs__end_date__lt=datetime.date.today()).values_list('id')))
+    pending_mentors = Mentor.objects.filter(approved=False)
 
     num_mentees = Mentee.objects.filter(approved=True).count()
-    num_active_mentees = Mentee.objects.filter(approved=True, mentormenteepairs__isnull=False).count()
-    num_pending_mentees = Mentee.objects.filter(approved=False).count()
 
-    return render(request, 'honors_admin_home.html', {
+    # Mentees can be in multiple pairs - we only want active pairs, and we only want a unique count
+    num_active_mentees = len(set(
+        Mentee.objects.filter(approved=True, mentormenteepairs__isnull=False,
+                              mentormenteepairs__end_date__lt=datetime.date.today()).values_list('id')))
+    pending_mentees = Mentee.objects.filter(approved=False)
+
+    num_pairs = MentorMenteePairs.objects.count()
+    num_active_pairs = MentorMenteePairs.objects.filter(
+        Q(end_date__isnull=False) | Q(end_date__lt=datetime.date.today())).count()
+
+    return render(request, 'admin/honors_admin_home.html', {
         'num_mentors': num_mentors,
         'num_active_mentors': num_active_mentors,
-        'num_pending_mentors': num_pending_mentors,
+        'num_pending_mentors': len(pending_mentors),
         'num_mentees': num_mentees,
         'num_active_mentees': num_active_mentees,
-        'num_pending_mentees': num_pending_mentees,
+        'num_pending_mentees': len(pending_mentees),
+        'num_pairs': num_pairs,
+        'num_active_pairs': num_active_pairs,
+        'pending_mentors': pending_mentors,
+        'pending_mentees': pending_mentees,
+    })
+
+
+def honors_admin_pairings(request):
+    pairings = MentorMenteePairs.objects.all()
+    pairings = sorted(pairings, key=lambda x: x.is_active(), reverse=True)
+
+    return render(request, 'admin/honors_admin_pairings.html', {
+        'pairings': pairings
     })
 
 
 def honors_admin_mentors(request):
     mentors = Mentor.objects.all()
-    return render(request, 'honors_admin_mentors.html', {
+    return render(request, 'admin/honors_admin_mentors.html', {
         'mentors': mentors
     })
 
 
 def honors_admin_mentees(request):
     mentees = Mentee.objects.all()
-    return render(request, 'honors_admin_mentees.html', {
+    return render(request, 'admin/honors_admin_mentees.html', {
         'mentees': mentees
     })
 
@@ -192,3 +221,20 @@ def export(request):
         ])
 
     return response
+
+
+def honors_admin_mentee_detail(request, mentee_id):
+    mentee = get_object_or_404(Mentee, pk=mentee_id)
+    return JsonResponse({
+        'title': "Mentee Detail",
+        'html': render_to_string('partials/detail_view.html', {'person': mentee})
+    })
+
+
+
+def honors_admin_mentor_detail(request, mentor_id):
+    mentor = get_object_or_404(Mentor, pk=mentor_id)
+    return JsonResponse({
+        'title': "Mentor Detail",
+        'html': render_to_string('partials/detail_view.html', {'person': mentor})
+    })

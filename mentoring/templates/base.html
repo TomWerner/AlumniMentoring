@@ -25,6 +25,9 @@
         </div>
         <div class="collapse navbar-collapse" id="myNavbar">
             <ul class="nav navbar-nav">
+                {% if user.is_superuser %}
+                    <li><a href="/honorsAdmin">Admin Home</a></li>
+                {% endif %}
             </ul>
             <ul class="nav navbar-nav navbar-right">
             </ul>

@@ -7,3 +7,21 @@ body {
     text-align: center;
     margin-top: -20px;
 }
+
+.card {
+    list-style-type: none;
+    background: #fff;
+    padding: 15px;
+    border: solid 1px #ddd;
+    margin-top: 7px;
+    box-shadow: 1px 1px #bbb
+}
+
+.card-title {
+    padding: 0;
+    margin: 0;
+}
+
+.vert-center-td {
+    vertical-align: middle !important;
+}

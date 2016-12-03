@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block head %}
+    {% load staticfiles %}
+    <script src="{% static 'js/admin_home.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h1>Honors Mentoring Admin Home</h1>
+
+        <div class="card">
+            <h2 class="card-title">Summary</h2>
+            <div class="row">
+                <div class="col-md-4">
+                    <h3><a href="mentors/">Mentors</a></h3>
+                    <h4>Total: {{ num_mentors }}</h4>
+                    <h4>Active: {{ num_active_mentors }}</h4>
+                    <h4>Pending approval: {{ num_pending_mentors }}</h4>
+                </div>
+                <div class="col-md-4">
+                    <h3><a href="mentees/">Mentees</a></h3>
+                    <h4>Total: {{ num_mentees }}</h4>
+                    <h4>Active: {{ num_active_mentees }}</h4>
+                    <h4>Pending approval: {{ num_pending_mentees }}</h4>
+                </div>
+                <div class="col-md-4">
+                    <h3><a href="pairs/">Pairings</a></h3>
+                    <h4>Total: {{ num_pairs }}</h4>
+                    <h4>Active: {{ num_active_pairs }}</h4>
+                </div>
+            </div>
+        </div>
+        {% if pending_mentors|length > 0 or pending_mentees|length > 0 %}
+            <div class="card">
+                <h2 class="card-title">Pending Approval</h2>
+
+                {% if pending_mentors|length > 0 %}
+                    <table class="table">
+                        <h4>Pending Mentors</h4>
+                        <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Gender</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        {% for mentor in pending_mentors %}
+                            <tr>
+                                <td class="vert-center-td">
+                                    <a href="/honorsAdmin/mentor/{{ mentor.id }}/view" class="popup">
+                                        {{ mentor.full_name }}
+                                    </a>
+                                </td>
+                                <td class="vert-center-td">{{ mentor.mentorcontactinformation.primary_email }}</td>
+                                <td class="vert-center-td">{{ mentor.get_gender_display }}</td>
+                                <td class="vert-center-td">
+                                    <a href="/honorsAdmin/mentor/{{ mentor.id }} /approve" class="btn btn-primary">
+                                        Approve
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                {% endif %}
+
+                {% if pending_mentees|length > 0 %}
+                    <table class="table">
+                        <h4>Pending Mentees</h4>
+                        <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Gender</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        {% for mentee in pending_mentees %}
+                            <tr>
+                                <td class="vert-center-td">
+                                    <a href="/honorsAdmin/mentee/{{ mentee.id }}/view" class="popup">
+                                        {{ mentee.full_name }}
+                                    </a>
+                                </td>
+                                <td class="vert-center-td">{{ mentee.menteecontactinformation.primary_email }}</td>
+                                <td class="vert-center-td">{{ mentee.get_gender_display }}</td>
+                                <td class="vert-center-td">
+                                    <a href="/honorsAdmin/mentee/{{ mentee.id }} /approve" class="btn btn-primary">
+                                        Approve
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                {% endif %}
+            </div>
+        {% endif %}
+
+    </div>
+
+
+
+    <div id="viewing-modal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title" id="viewing-modal-title"></h4>
+                </div>
+                <div id="modal-content">
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}
+

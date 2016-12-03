@@ -1,0 +1,17 @@
+<div style="padding:15px">
+    <h3>{{ person.full_name }}</h3>
+    <h4>Email</h4>
+    <div>{{ person.email }}</div>
+    <h4>Phone</h4>
+    <div>{{ person.phone_number }}</div>
+    <h4>Address</h4>
+    <div>{{ person.mailing_address|linebreaks }}</div>
+    <h4>Web Contacts</h4>
+    <div>{{ person.web_contacts|linebreaks }}</div>
+
+    <h4>Education</h4>
+    <div>{{ person.education|linebreaks }}</div>
+
+    <h4>Work</h4>
+    <div>{{ person.employment|linebreaks }}</div>
+</div>

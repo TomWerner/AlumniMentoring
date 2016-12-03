@@ -1,3 +1,5 @@
+import datetime
+
 from django.contrib.auth.models import User
 from django.db import models
 from django.conf import settings
@@ -46,6 +48,32 @@ class Mentor(models.Model):
     active = models.BooleanField(default=True)
     approved = models.BooleanField(default=False)
 
+    def full_name(self):
+        return self.first_name + " " + self.last_name
+
+    def __str__(self):
+        approved = "Approved" if self.approved else "Not Approved"
+        return self.full_name() + "(" + approved + ")"
+
+    def email(self):
+        return self.mentorcontactinformation.email()
+
+    def phone_number(self):
+        return self.mentorcontactinformation.phone_number()
+
+    def mailing_address(self):
+        return self.mentorcontactinformation.mailing_address()
+
+    def web_contacts(self):
+        return self.mentorcontactinformation.web_contacts()
+
+    def education(self):
+        return "\n\n".join([x.display_string() for x in self.mentoreducation_set.all()])
+
+    def employment(self):
+        return "\n\n".join([x.display_string() for x in self.mentoremployment_set.all()])
+
+
 
 class Mentee(models.Model):
     first_name = models.CharField(max_length=50)
@@ -53,6 +81,31 @@ class Mentee(models.Model):
     gender = models.CharField(max_length=1, choices=genders)
     active = models.BooleanField(default=True)
     approved = models.BooleanField(default=False)
+
+    def full_name(self):
+        return self.first_name + " " + self.last_name
+
+    def __str__(self):
+        approved = "Approved" if self.approved else "Not Approved"
+        return self.full_name() + "(" + approved + ")"
+
+    def email(self):
+        return self.menteecontactinformation.email()
+
+    def phone_number(self):
+        return self.menteecontactinformation.phone_number()
+
+    def mailing_address(self):
+        return self.menteecontactinformation.mailing_address()
+
+    def web_contacts(self):
+        return self.menteecontactinformation.web_contacts()
+
+    def education(self):
+        return "\n\n".join([x.display_string() for x in self.menteeeducation_set.all()])
+
+    def employment(self):
+        return "This application does not record mentee employment at this time."
 
 
 class MentorContactInformation(models.Model):
@@ -71,11 +124,31 @@ class MentorContactInformation(models.Model):
     city = models.CharField(max_length=100)
     state = models.CharField(max_length=30)
 
+    def email(self):
+        result = self.primary_email
+        if self.secondary_email is not None:
+            result += "\t(" + self.secondary_email + ")"
+        return result
+
+    def phone_number(self):
+        result = self.primary_phone
+        if self.secondary_phone is not None:
+            result += "\t(" + self.secondary_phone + ")"
+        return result
+
+    def mailing_address(self):
+        return self.street_address + "\n" + self.city + " " + self.state
+
+    def web_contacts(self):
+        return "LinkedIn: " + self.linkedin_url + "\n" + \
+               "Facebook:" + self.facebook_url + "\n" + \
+               "Personal: " + self.personal_url
+
 
 class MenteeContactInformation(models.Model):
     mentee = models.OneToOneField(Mentee, on_delete=models.CASCADE)
     primary_phone = models.CharField(max_length=20)
-    secondary_phone = models.CharField(max_length=20)
+    secondary_phone = models.CharField(max_length=20, null=True, blank=True)
 
     primary_email = models.EmailField()
     secondary_email = models.EmailField()
@@ -88,6 +161,26 @@ class MenteeContactInformation(models.Model):
     city = models.CharField(max_length=100)
     state = models.CharField(max_length=30)
 
+    def email(self):
+        result = self.primary_email
+        if self.secondary_email is not None:
+            result += "\t(" + self.secondary_email + ")"
+        return result
+
+    def phone_number(self):
+        result = self.primary_phone
+        if self.secondary_phone is not None:
+            result += "\t(" + self.secondary_phone + ")"
+        return result
+
+    def mailing_address(self):
+        return self.street_address + "\n" + self.city + " " + self.state
+
+    def web_contacts(self):
+        return "LinkedIn: " + self.linkedin_url + "\n" + \
+               "Facebook:" + self.facebook_url + "\n" + \
+               "Personal: " + self.personal_url
+
 
 class MentorEducation(models.Model):
     mentor = models.ForeignKey(Mentor)
@@ -99,6 +192,12 @@ class MentorEducation(models.Model):
     degree = models.CharField(max_length=3, choices=degree_options)
     graduation_year = models.DateField()
 
+    def display_string(self):
+        return self.school + \
+               " (" + self.get_degree_display() + ", " + str(self.graduation_year.strftime("%B %Y")) + ")\n" + \
+               "Major(s): " + ", ".join(x for x in [self.major1, self.major2] if x is not None) + "\n" + \
+               "Minor(s): " + ", ".join(x for x in [self.minor1, self.minor2] if x is not None) + "\n"
+
 
 class MenteeEducation(models.Model):
     mentee = models.ForeignKey(Mentee)
@@ -109,6 +208,12 @@ class MenteeEducation(models.Model):
     minor2 = models.CharField(max_length=100, blank=True, null=True)
     graduation_year = models.DateField()
 
+    def display_string(self):
+        return self.school + \
+               " (" + str(self.graduation_year.strftime("%B %Y")) + ")\n" + \
+               "Major(s): " + ", ".join(x for x in [self.major1, self.major2] if x is not None) + "\n" + \
+               "Minor(s): " + ", ".join(x for x in [self.minor1, self.minor2] if x is not None) + "\n"
+
 
 class MentorEmployment(models.Model):
     mentor = models.ForeignKey(Mentor)
@@ -116,35 +221,36 @@ class MentorEmployment(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField()
 
+    def display_string(self):
+        return self.title + " at " + self.company
+
 
 class MentorMenteePairs(models.Model):
     mentor = models.ForeignKey(Mentor)
     mentee = models.ForeignKey(Mentee)
     start_date = models.DateField()
-    end_date = models.DateField(null=True)
-    comments = models.TextField()
+    end_date = models.DateField(null=True, blank=True)
+    comments = models.TextField(null=True, blank=True)
+
+    def is_active(self):
+        return self.end_date is None or self.end_date >= datetime.date.today()
+
+    def __str__(self):
+        return str(self.mentor) + " and " + str(self.mentee) + " (" + str(self.start_date) + " to " + str(
+            self.end_date) + ")"
 
 
 class MenteePreference(models.Model):
     mentee = models.OneToOneField(Mentee, on_delete=models.CASCADE)
-    first_choice = models.CharField(max_length=1, choices=mentoring_categories)
-    second_choice = models.CharField(max_length=1, choices=mentoring_categories, null=True, blank=True)
-    third_choice = models.CharField(max_length=1, choices=mentoring_categories, null=True, blank=True)
+    first_choice = models.CharField(max_length=2, choices=mentoring_categories)
+    second_choice = models.CharField(max_length=2, choices=mentoring_categories, null=True, blank=True)
+    third_choice = models.CharField(max_length=2, choices=mentoring_categories, null=True, blank=True)
     preferred_communication = models.CharField(max_length=1, choices=communication_options)
 
 
 class MentorPreference(models.Model):
     mentor = models.OneToOneField(Mentor, on_delete=models.CASCADE)
-    first_choice = models.CharField(max_length=1, choices=mentoring_categories)
-    second_choice = models.CharField(max_length=1, choices=mentoring_categories, null=True, blank=True)
-    third_choice = models.CharField(max_length=1, choices=mentoring_categories, null=True, blank=True)
+    first_choice = models.CharField(max_length=2, choices=mentoring_categories)
+    second_choice = models.CharField(max_length=2, choices=mentoring_categories, null=True, blank=True)
+    third_choice = models.CharField(max_length=2, choices=mentoring_categories, null=True, blank=True)
     preferred_communication = models.CharField(max_length=1, choices=communication_options)
-
-
-
-
-
-
-
-
-

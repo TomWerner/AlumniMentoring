@@ -114,3 +114,14 @@ class MenteeAdmin(admin.ModelAdmin):
         MenteeEducationInline,
         MenteePreferenceInline,
     ]
+
+
+@admin.register(MentorMenteePairs)
+class MentorMenteePairAdmin(admin.ModelAdmin):
+    fields = (
+        'mentor',
+        'mentee',
+        'start_date',
+        'end_date',
+        'comments'
+    )
