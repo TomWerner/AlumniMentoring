@@ -149,6 +149,7 @@ def honors_admin_home(request):
     })
 
 
+@login_required
 def honors_admin_pairings(request):
     pairings = MentorMenteePairs.objects.all()
     pairings = sorted(pairings, key=lambda x: x.is_active(), reverse=True)
@@ -158,6 +159,7 @@ def honors_admin_pairings(request):
     })
 
 
+@login_required
 def honors_admin_mentors(request):
     mentors = Mentor.objects.all()
     return render(request, 'admin/honors_admin_mentors.html', {
@@ -165,6 +167,7 @@ def honors_admin_mentors(request):
     })
 
 
+@login_required
 def honors_admin_mentees(request):
     mentees = Mentee.objects.all()
     return render(request, 'admin/honors_admin_mentees.html', {
@@ -172,6 +175,7 @@ def honors_admin_mentees(request):
     })
 
 
+@login_required
 def export(request):
     response = HttpResponse(content_type='text/html')
     response['Content-Disposition'] = 'attachment; filename="mentoring.csv"'
@@ -223,6 +227,7 @@ def export(request):
     return response
 
 
+@login_required
 def honors_admin_mentee_detail(request, mentee_id):
     mentee = get_object_or_404(Mentee, pk=mentee_id)
     return JsonResponse({
@@ -231,10 +236,24 @@ def honors_admin_mentee_detail(request, mentee_id):
     })
 
 
-
+@login_required
 def honors_admin_mentor_detail(request, mentor_id):
     mentor = get_object_or_404(Mentor, pk=mentor_id)
     return JsonResponse({
         'title': "Mentor Detail",
         'html': render_to_string('partials/detail_view.html', {'person': mentor})
     })
+
+
+def honors_admin_mentee_approve(request, mentee_id):
+    mentee = get_object_or_404(Mentee, pk=mentee_id)
+    mentee.approved = True
+    mentee.save()
+    return redirect('/honorsAdmin', request=request)
+
+
+def honors_admin_mentor_approve(request, mentor_id):
+    mentor = get_object_or_404(Mentor, pk=mentor_id)
+    mentor.approved = True
+    mentor.save()
+    return redirect('/honorsAdmin', request=request)

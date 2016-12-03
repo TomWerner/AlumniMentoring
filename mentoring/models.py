@@ -73,6 +73,8 @@ class Mentor(models.Model):
     def employment(self):
         return "\n\n".join([x.display_string() for x in self.mentoremployment_set.all()])
 
+    def preferences(self):
+        return self.mentorpreference.display_string()
 
 
 class Mentee(models.Model):
@@ -106,6 +108,9 @@ class Mentee(models.Model):
 
     def employment(self):
         return "This application does not record mentee employment at this time."
+
+    def preferences(self):
+        return self.menteepreference.display_string()
 
 
 class MentorContactInformation(models.Model):
@@ -247,6 +252,17 @@ class MenteePreference(models.Model):
     third_choice = models.CharField(max_length=2, choices=mentoring_categories, null=True, blank=True)
     preferred_communication = models.CharField(max_length=1, choices=communication_options)
 
+    def display_string(self):
+        choices = []
+        if self.first_choice is not None:
+            choices.append(self.get_first_choice_display())
+        if self.second_choice is not None:
+            choices.append(self.get_second_choice_display())
+        if self.third_choice is not None:
+            choices.append(self.get_third_choice_display())
+        return "Would like to get *" + self.get_preferred_communication_display() + "* advice on\n" + \
+               "\n".join(str(num + 1) + ".) " + choice for num, choice in zip(range(3), choices))
+
 
 class MentorPreference(models.Model):
     mentor = models.OneToOneField(Mentor, on_delete=models.CASCADE)
@@ -254,3 +270,14 @@ class MentorPreference(models.Model):
     second_choice = models.CharField(max_length=2, choices=mentoring_categories, null=True, blank=True)
     third_choice = models.CharField(max_length=2, choices=mentoring_categories, null=True, blank=True)
     preferred_communication = models.CharField(max_length=1, choices=communication_options)
+
+    def display_string(self):
+        choices = []
+        if self.first_choice is not None:
+            choices.append(self.get_first_choice_display())
+        if self.second_choice is not None:
+            choices.append(self.get_second_choice_display())
+        if self.third_choice is not None:
+            choices.append(self.get_third_choice_display())
+        return "Would like to give *" + self.get_preferred_communication_display() + "* advice on\n" + \
+               "\n".join(str(num + 1) + ".) " + choice for num, choice in zip(range(3), choices))

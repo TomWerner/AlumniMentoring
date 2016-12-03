@@ -56,7 +56,7 @@
                                 <td class="vert-center-td">{{ mentor.mentorcontactinformation.primary_email }}</td>
                                 <td class="vert-center-td">{{ mentor.get_gender_display }}</td>
                                 <td class="vert-center-td">
-                                    <a href="/honorsAdmin/mentor/{{ mentor.id }} /approve" class="btn btn-primary">
+                                    <a href="/honorsAdmin/mentor/{{ mentor.id }}/approve" class="btn btn-primary approve">
                                         Approve
                                     </a>
                                 </td>
@@ -86,7 +86,7 @@
                                 <td class="vert-center-td">{{ mentee.menteecontactinformation.primary_email }}</td>
                                 <td class="vert-center-td">{{ mentee.get_gender_display }}</td>
                                 <td class="vert-center-td">
-                                    <a href="/honorsAdmin/mentee/{{ mentee.id }} /approve" class="btn btn-primary">
+                                    <a href="/honorsAdmin/mentee/{{ mentee.id }}/approve" class="btn btn-primary approve">
                                         Approve
                                     </a>
                                 </td>

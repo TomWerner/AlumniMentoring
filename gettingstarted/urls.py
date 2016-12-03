@@ -24,8 +24,10 @@ urlpatterns = [
     url(r'^honorsAdmin/$', views.honors_admin_home),
     url(r'^honorsAdmin/mentors/$', views.honors_admin_mentors),
     url(r'^honorsAdmin/mentor/([0-9+])/view', views.honors_admin_mentor_detail),
+    url(r'^honorsAdmin/mentor/([0-9+])/approve', views.honors_admin_mentor_approve),
     url(r'^honorsAdmin/mentees/$', views.honors_admin_mentees),
     url(r'^honorsAdmin/mentee/([0-9+])/view', views.honors_admin_mentee_detail),
+    url(r'^honorsAdmin/mentee/([0-9+])/approve', views.honors_admin_mentee_approve),
     url(r'^honorsAdmin/pairs/$', views.honors_admin_pairings),
     url(r'^honorsAdmin/export/$', views.export),
 
