@@ -112,6 +112,10 @@ class Mentee(models.Model):
     def preferences(self):
         return self.menteepreference.display_string()
 
+    def has_no_mentor(self):
+        pairs = self.mentormenteepairs_set.all()
+        return len(pairs) > 0
+
 
 class MentorContactInformation(models.Model):
     mentor = models.OneToOneField(Mentor, on_delete=models.CASCADE)

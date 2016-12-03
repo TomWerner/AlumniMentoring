@@ -97,6 +97,39 @@
             </div>
         {% endif %}
 
+        {% if matchless_mentees|length > 0 %}
+        <div class="card">
+            <h2 class="card-title">Matchless Mentees</h2>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Gender</th>
+                    <th></th>
+                </tr>
+                </thead>
+                {% for mentee in matchless_mentees %}
+                    <tr>
+                        <td class="vert-center-td">
+                            <a href="/honorsAdmin/mentee/{{ mentee.id }}/view" class="popup">
+                                {{ mentee.full_name }}
+                            </a>
+                        </td>
+                        <td class="vert-center-td">{{ mentee.menteecontactinformation.primary_email }}</td>
+                        <td class="vert-center-td">{{ mentee.get_gender_display }}</td>
+                        <td class="vert-center-td">
+                            <a href="/honorsAdmin/mentee/{{ mentee.id }}/approve" class="btn btn-primary approve">
+                                Approve
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+        {% endif %}
+
     </div>
 
 

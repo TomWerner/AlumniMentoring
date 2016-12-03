@@ -2,27 +2,33 @@
 
 {% block content %}
     <div class="container">
-        <h1>Honors Mentoring Pairs</h1>
+        <div class="card">
+            <h1>Honors Mentoring Pairs</h1>
 
-        <table class="table">
-        <thead>
-            <tr>
-                <th>Mentor Name</th>
-                <th>Mentee Name</th>
-                <th>Active</th>
-                <th>Start Date</th>
-                <th>End Date</th>
-            </tr>
-        </thead>
-        {% for pairing in pairings %}
-            <tr>
-                <td><a href="/admin/mentoring/mentor/{{ pairing.mentor_id  }}/view/">{{ pairing.mentor.full_name }}</a></td>
-                <td><a href="/admin/mentoring/mentee/{{ pairing.mentee_id  }}/view/">{{ pairing.mentee.full_name }}</a></td>
-                <td>{{ pairing.is_active }}</td>
-                <td>{{ pairing.start_date}}</td>
-                <td>{{ pairing.end_date}}</td>
-            </tr>
-        {% endfor %}
-        </table>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Mentor Name</th>
+                    <th>Mentee Name</th>
+                    <th>Active</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                </tr>
+                </thead>
+                {% for pairing in pairings %}
+                    <tr>
+                        <td>
+                            <a href="/admin/mentoring/mentor/{{ pairing.mentor_id }}/view/">{{ pairing.mentor.full_name }}</a>
+                        </td>
+                        <td>
+                            <a href="/admin/mentoring/mentee/{{ pairing.mentee_id }}/view/">{{ pairing.mentee.full_name }}</a>
+                        </td>
+                        <td>{{ pairing.is_active }}</td>
+                        <td>{{ pairing.start_date }}</td>
+                        <td>{{ pairing.end_date }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
     </div>
 {% endblock %}

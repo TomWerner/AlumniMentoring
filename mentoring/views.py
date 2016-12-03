@@ -120,7 +120,7 @@ def honors_admin_home(request):
     # Mentors can be in multiple pairs - we only want active pairs, and we only want a unique count
     num_active_mentors = len(set(
         Mentor.objects.filter(approved=True, mentormenteepairs__isnull=False,
-                              mentormenteepairs__end_date__lt=datetime.date.today()).values_list('id')))
+                              mentormenteepairs__end_date__gt=datetime.date.today()).values_list('id')))
     pending_mentors = Mentor.objects.filter(approved=False)
 
     num_mentees = Mentee.objects.filter(approved=True).count()
@@ -128,12 +128,15 @@ def honors_admin_home(request):
     # Mentees can be in multiple pairs - we only want active pairs, and we only want a unique count
     num_active_mentees = len(set(
         Mentee.objects.filter(approved=True, mentormenteepairs__isnull=False,
-                              mentormenteepairs__end_date__lt=datetime.date.today()).values_list('id')))
+                              mentormenteepairs__end_date__gt=datetime.date.today()).values_list('id')))
     pending_mentees = Mentee.objects.filter(approved=False)
 
     num_pairs = MentorMenteePairs.objects.count()
     num_active_pairs = MentorMenteePairs.objects.filter(
         Q(end_date__isnull=False) | Q(end_date__lt=datetime.date.today())).count()
+
+    matchless_mentees = Mentee.objects.all()
+    matchless_mentees = [x for x in matchless_mentees if x.has_no_mentor()]
 
     return render(request, 'admin/honors_admin_home.html', {
         'num_mentors': num_mentors,
@@ -146,6 +149,7 @@ def honors_admin_home(request):
         'num_active_pairs': num_active_pairs,
         'pending_mentors': pending_mentors,
         'pending_mentees': pending_mentees,
+        'matchless_mentees': matchless_mentees,
     })
 
 
