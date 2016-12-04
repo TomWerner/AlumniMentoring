@@ -1,10 +1,5 @@
 {% extends "base.html" %}
 
-{% block head %}
-    {% load staticfiles %}
-    <script src="{% static 'js/admin_home.js' %}"></script>
-{% endblock %}
-
 {% block content %}
     <div class="container">
         <h1>Honors Mentoring Admin Home</h1>
@@ -56,7 +51,8 @@
                                 <td class="vert-center-td">{{ mentor.mentorcontactinformation.primary_email }}</td>
                                 <td class="vert-center-td">{{ mentor.get_gender_display }}</td>
                                 <td class="vert-center-td">
-                                    <a href="/honorsAdmin/mentor/{{ mentor.id }}/approve" class="btn btn-primary approve">
+                                    <a href="/honorsAdmin/mentor/{{ mentor.id }}/approve"
+                                       class="btn btn-primary approve">
                                         Approve
                                     </a>
                                 </td>
@@ -86,7 +82,8 @@
                                 <td class="vert-center-td">{{ mentee.menteecontactinformation.primary_email }}</td>
                                 <td class="vert-center-td">{{ mentee.get_gender_display }}</td>
                                 <td class="vert-center-td">
-                                    <a href="/honorsAdmin/mentee/{{ mentee.id }}/approve" class="btn btn-primary approve">
+                                    <a href="/honorsAdmin/mentee/{{ mentee.id }}/approve"
+                                       class="btn btn-primary approve">
                                         Approve
                                     </a>
                                 </td>
@@ -98,56 +95,38 @@
         {% endif %}
 
         {% if matchless_mentees|length > 0 %}
-        <div class="card">
-            <h2 class="card-title">Matchless Mentees</h2>
-            <table class="table">
-                <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Gender</th>
-                    <th></th>
-                </tr>
-                </thead>
-                {% for mentee in matchless_mentees %}
+            <div class="card">
+                <h2 class="card-title">Matchless Mentees</h2>
+                <table class="table">
+                    <thead>
                     <tr>
-                        <td class="vert-center-td">
-                            <a href="/honorsAdmin/mentee/{{ mentee.id }}/view" class="popup">
-                                {{ mentee.full_name }}
-                            </a>
-                        </td>
-                        <td class="vert-center-td">{{ mentee.menteecontactinformation.primary_email }}</td>
-                        <td class="vert-center-td">{{ mentee.get_gender_display }}</td>
-                        <td class="vert-center-td">
-                            <a href="/honorsAdmin/mentee/{{ mentee.id }}/approve" class="btn btn-primary approve">
-                                Approve
-                            </a>
-                        </td>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Gender</th>
+                        <th></th>
                     </tr>
-                {% endfor %}
-            </table>
-        </div>
+                    </thead>
+                    {% for mentee in matchless_mentees %}
+                        <tr>
+                            <td class="vert-center-td">
+                                <a href="/honorsAdmin/mentee/{{ mentee.id }}/view" class="popup">
+                                    {{ mentee.full_name }}
+                                </a>
+                            </td>
+                            <td class="vert-center-td">{{ mentee.menteecontactinformation.primary_email }}</td>
+                            <td class="vert-center-td">{{ mentee.get_gender_display }}</td>
+                            <td class="vert-center-td">
+                                <a href="/honorsAdmin/mentee/{{ mentee.id }}/getmatches" class="btn btn-primary popup">
+                                    Get Matches
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
 
         {% endif %}
 
-    </div>
-
-
-
-    <div id="viewing-modal" class="modal fade" role="dialog">
-        <div class="modal-dialog">
-            <!-- Modal content-->
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title" id="viewing-modal-title"></h4>
-                </div>
-                <div id="modal-content">
-
-                </div>
-            </div>
-
-        </div>
     </div>
 {% endblock %}
 

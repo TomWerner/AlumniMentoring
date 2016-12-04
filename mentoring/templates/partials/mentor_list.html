@@ -1,0 +1,33 @@
+{% for score, mentor in mentor_results %}
+    <div class="card">
+        <div class="row">
+            <div class="col-md-12">
+
+                <h3>
+                    <a href="/honorsAdmin/mentor/{{ mentor.id }}/view" class="popup">
+                        {{ mentor.full_name }} (Match score: {{ score }})
+                    </a>
+                </h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+
+                <h4>Education</h4>
+                <div>{{ mentor.education|linebreaks }}</div>
+
+                <h4>Work</h4>
+                <div>{{ mentor.employment|linebreaks }}</div>
+            </div>
+            <div class="col-sm-6">
+                <h4>Email</h4>
+                <div>{{ mentor.email|linebreaks }}</div>
+
+                <h4>Preferences</h4>
+                <div>{{ mentor.preferences|linebreaks }}</div>
+            </div>
+        </div>
+
+
+    </div>
+{% endfor %}

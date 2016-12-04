@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block head %}
+    {% load staticfiles %}
+    <script src="{% static 'js/matchless_mentees.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="affix">
+
+                    <div class="card">
+                        <h2>Matchless Mentees</h2>
+                    </div>
+                    <div class="card">
+                        <h3>{{ mentee.full_name }}</h3>
+                        <input type="hidden" value="{{ mentee.id }}" id="mentee_id">
+
+                        <h4>Email</h4>
+                        <div>{{ mentee.email|linebreaks }}</div>
+
+                        <h4>Phone</h4>
+                        <div>{{ mentee.phone_number }}</div>
+
+                        <h4>Address</h4>
+                        <div>{{ mentee.mailing_address|linebreaks }}</div>
+
+                        <h4>Web Contacts</h4>
+                        <div>{{ mentee.web_contacts|linebreaks }}</div>
+
+                        <h4>Education</h4>
+                        <div>{{ mentee.education|linebreaks }}</div>
+
+                        <h4>Work</h4>
+                        <div>{{ mentee.employment|linebreaks }}</div>
+
+                        <h4>Preferences</h4>
+                        <div>{{ mentee.preferences|linebreaks }}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-offset-5 col-md-7">
+                <div id="mentor_list">
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

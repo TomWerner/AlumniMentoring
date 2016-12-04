@@ -114,7 +114,22 @@ class Mentee(models.Model):
 
     def has_no_mentor(self):
         pairs = self.mentormenteepairs_set.all()
-        return len(pairs) > 0
+        return len(pairs) == 0
+
+    def score_mentor(self, mentor: Mentor):
+        score = 0
+        score += self._score_mentor_preferences(mentor)
+        score += self._score_mentor_education(mentor)
+
+        return score
+
+    def _score_mentor_preferences(self, mentor: Mentor):
+        if self.menteepreference is None:
+            return 0
+        return self.menteepreference.score_mentor(mentor)
+
+    def _score_mentor_education(self, mentor: Mentor):
+        return sum([x.score_mentor(mentor) for x in self.menteeeducation_set.all()])
 
 
 class MentorContactInformation(models.Model):
@@ -136,13 +151,13 @@ class MentorContactInformation(models.Model):
     def email(self):
         result = self.primary_email
         if self.secondary_email is not None:
-            result += "\t(" + self.secondary_email + ")"
+            result += "\n(" + self.secondary_email + ")"
         return result
 
     def phone_number(self):
         result = self.primary_phone
-        if self.secondary_phone is not None:
-            result += "\t(" + self.secondary_phone + ")"
+        if self.secondary_phone is not None and len(self.secondary_phone) > 0:
+            result += "\n(" + self.secondary_phone + ")"
         return result
 
     def mailing_address(self):
@@ -173,13 +188,13 @@ class MenteeContactInformation(models.Model):
     def email(self):
         result = self.primary_email
         if self.secondary_email is not None:
-            result += "\t(" + self.secondary_email + ")"
+            result += "\n(" + self.secondary_email + ")"
         return result
 
     def phone_number(self):
         result = self.primary_phone
-        if self.secondary_phone is not None:
-            result += "\t(" + self.secondary_phone + ")"
+        if self.secondary_phone is not None and len(self.secondary_phone) > 0:
+            result += "\n(" + self.secondary_phone + ")"
         return result
 
     def mailing_address(self):
@@ -222,6 +237,24 @@ class MenteeEducation(models.Model):
                " (" + str(self.graduation_year.strftime("%B %Y")) + ")\n" + \
                "Major(s): " + ", ".join(x for x in [self.major1, self.major2] if x is not None) + "\n" + \
                "Minor(s): " + ", ".join(x for x in [self.minor1, self.minor2] if x is not None) + "\n"
+
+    def score_mentor(self, mentor: Mentor):
+        score = 0
+        for education in mentor.mentoreducation_set.all():
+            majors = [education.major1, education.major2]
+            minors = [education.minor1, education.minor2]
+
+            for major in [self.major1, self.major2]:
+                if major and major in majors:
+                    score += 100
+                if major and major in minors:
+                    score += 50
+            for minor in [self.minor1, self.minor2]:
+                if minor and minor in minors:
+                    score += 50
+                if minor and minor in minors:
+                    score += 25
+        return score
 
 
 class MentorEmployment(models.Model):
@@ -266,6 +299,20 @@ class MenteePreference(models.Model):
             choices.append(self.get_third_choice_display())
         return "Would like to get *" + self.get_preferred_communication_display() + "* advice on\n" + \
                "\n".join(str(num + 1) + ".) " + choice for num, choice in zip(range(3), choices))
+
+    def score_mentor(self, mentor):
+        mentor_pref = mentor.mentorpreference
+        score = 0
+        score += (self.preferred_communication == mentor_pref.preferred_communication) * 100
+
+        my_choices = [self.first_choice, self.second_choice, self.third_choice]
+        their_choices = [mentor_pref.first_choice, mentor_pref.second_choice, mentor_pref.third_choice]
+
+        for i, my_choice in enumerate(my_choices):
+            if my_choice and my_choice in their_choices:
+                score += int(100 / (i + 1))   # 100 for first choice, 50 for seocnd, 33 for third
+        return score
+
 
 
 class MentorPreference(models.Model):

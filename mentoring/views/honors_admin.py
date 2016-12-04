@@ -2,116 +2,16 @@ import csv
 import datetime
 
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User
-from django.contrib.auth import login
 from django.db.models import Q
-from django.forms import inlineformset_factory
-from django.http import HttpResponse
-from django.http import HttpResponseRedirect
-from django.http import JsonResponse
-from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
+from django.shortcuts import render, get_object_or_404, redirect
 from django.template.loader import render_to_string
 
-from mentoring.forms import *
-from mentoring.models import Mentor, MentorContactInformation, MentorMenteePairs
-
-
-def create_new_user(request):
-    if request.method == "POST":
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            new_user = User.objects.create_user(**form.cleaned_data)
-            login(request, new_user)
-            # redirect, or however you want to get to the main view
-            return HttpResponseRedirect('main.html')
-    else:
-        form = UserCreationForm()
-
-    return render(request, 'new_mentor.html', {'form': form})
-
-
-def home(request):
-    return render(request, 'mock_honors_page.html')
-
-
-def thank_you_mentor(request):
-    return render(request, "thanks.html", {'message': "Thank you for applying to be an honors mentor!"})
-
-
-def thank_you_mentee(request):
-    return render(request, "thanks.html", {'message': "Thank you for applying to be part of honors mentoring!"})
-
-
-def new_mentor(request):
-    if request.method == 'POST':
-        mentor_form = MentorForm(request.POST)
-        contact_form = MentorContactFormSet(request.POST)
-        employment_form = MentorEmploymentFormSet(request.POST)
-        education_form = MentorEducationFormSet(request.POST)
-        preference_form = MentorPreferenceFormSet(request.POST)
-
-        if mentor_form.is_valid() and contact_form.is_valid() and employment_form.is_valid() and education_form.is_valid() and preference_form.is_valid():
-            mentor = mentor_form.save()
-            contact_form.instance = mentor
-            contact_form.save()
-            employment_form.instance = mentor
-            employment_form.save()
-            education_form.instance = mentor
-            education_form.save()
-            preference_form.instance = mentor
-            preference_form.save()
-            return redirect('/thankyoumentor')
-
-    else:
-        mentor_form = MentorForm()
-        contact_form = MentorContactFormSet()
-        education_form = MentorEducationFormSet()
-        employment_form = MentorEmploymentFormSet()
-        preference_form = MentorPreferenceFormSet()
-
-    return render(request, 'new_mentor.html', {
-        'form': mentor_form,
-        'contact_form': contact_form,
-        'education_form': education_form,
-        'employment_form': employment_form,
-        'preference_form': preference_form
-    })
-
-
-def new_mentee(request):
-    if request.method == 'POST':
-        mentee_form = MenteeForm(request.POST)
-        contact_form = MenteeContactFormSet(request.POST)
-        education_form = MenteeEducationFormSet(request.POST)
-        preference_form = MenteePreferenceFormSet(request.POST)
-
-        if mentee_form.is_valid() and contact_form.is_valid() and education_form.is_valid():
-            mentee = mentee_form.save()
-            contact_form.instance = mentee
-            contact_form.save()
-            education_form.instance = mentee
-            education_form.save()
-            preference_form.instance = mentee
-            preference_form.save()
-            return redirect('/thankyoumentee')
-
-    else:
-        mentee_form = MenteeForm()
-        contact_form = MenteeContactFormSet()
-        education_form = MenteeEducationFormSet()
-        preference_form = MenteePreferenceFormSet()
-
-    return render(request, 'new_mentee.html', {
-        'form': mentee_form,
-        'contact_form': contact_form,
-        'education_form': education_form,
-        'preference_form': preference_form
-    })
+from mentoring.models import Mentor, Mentee, MentorMenteePairs
 
 
 @login_required
-def honors_admin_home(request):
+def home(request):
     if not request.user.is_superuser:
         return HttpResponseRedirect('/', status=403)
 
@@ -154,7 +54,7 @@ def honors_admin_home(request):
 
 
 @login_required
-def honors_admin_pairings(request):
+def pairings(request):
     pairings = MentorMenteePairs.objects.all()
     pairings = sorted(pairings, key=lambda x: x.is_active(), reverse=True)
 
@@ -164,7 +64,7 @@ def honors_admin_pairings(request):
 
 
 @login_required
-def honors_admin_mentors(request):
+def mentors(request):
     mentors = Mentor.objects.all()
     return render(request, 'admin/honors_admin_mentors.html', {
         'mentors': mentors
@@ -172,7 +72,7 @@ def honors_admin_mentors(request):
 
 
 @login_required
-def honors_admin_mentees(request):
+def mentees(request):
     mentees = Mentee.objects.all()
     return render(request, 'admin/honors_admin_mentees.html', {
         'mentees': mentees
@@ -232,7 +132,7 @@ def export(request):
 
 
 @login_required
-def honors_admin_mentee_detail(request, mentee_id):
+def mentee_detail(request, mentee_id):
     mentee = get_object_or_404(Mentee, pk=mentee_id)
     return JsonResponse({
         'title': "Mentee Detail",
@@ -241,7 +141,7 @@ def honors_admin_mentee_detail(request, mentee_id):
 
 
 @login_required
-def honors_admin_mentor_detail(request, mentor_id):
+def mentor_detail(request, mentor_id):
     mentor = get_object_or_404(Mentor, pk=mentor_id)
     return JsonResponse({
         'title': "Mentor Detail",
@@ -249,15 +149,66 @@ def honors_admin_mentor_detail(request, mentor_id):
     })
 
 
-def honors_admin_mentee_approve(request, mentee_id):
+@login_required
+def mentee_approve(request, mentee_id):
     mentee = get_object_or_404(Mentee, pk=mentee_id)
     mentee.approved = True
     mentee.save()
     return redirect('/honorsAdmin', request=request)
 
 
-def honors_admin_mentor_approve(request, mentor_id):
+@login_required
+def mentor_approve(request, mentor_id):
     mentor = get_object_or_404(Mentor, pk=mentor_id)
     mentor.approved = True
     mentor.save()
     return redirect('/honorsAdmin', request=request)
+
+
+def mentee_get_matches(request, mentee_id):
+    mentee = get_object_or_404(Mentee, pk=mentee_id)
+
+    mentors = Mentor.objects.filter(approved=True)
+    scores = [0 for _ in mentors]
+
+    for i, mentor in enumerate(mentors):
+        scores[i] += mentee.score_mentor(mentor)
+
+    mentor_results = sorted(list(zip(scores, mentors)), reverse=True, key=lambda x: x[0])
+    mentor_results = mentor_results[0: min(len(mentor_results), 5)]
+
+    return JsonResponse({
+        'title': "Mentee Matches (Top %s shown)" % len(mentor_results),
+        'modal_width': 1000,
+        'html': render_to_string('partials/matches_view.html', {
+            'person': mentee,
+            'mentor_results': mentor_results,
+        }, request=request),
+        'modal_footer': """<button type="button" class="btn btn-default" id="see_all_mentors">See All Mentors</button>
+<button type="button" class="btn btn-primary" id="use_this_mentor">Use This Mentor</button>"""
+    })
+
+
+def mentee_get_all_matches(request, mentee_id):
+    mentee = get_object_or_404(Mentee, pk=mentee_id)
+
+    return render(request, 'admin/honors_admin_get_all_matches.html', {
+        'mentee': mentee
+    })
+
+
+def mentee_get_all_matches_list(request, mentee_id):
+    mentee = get_object_or_404(Mentee, pk=mentee_id)
+
+    mentors = Mentor.objects.filter(approved=True)
+    scores = [0 for _ in mentors]
+
+    for i, mentor in enumerate(mentors):
+        scores[i] += mentee.score_mentor(mentor)
+
+    mentor_results = sorted(list(zip(scores, mentors)), reverse=True, key=lambda x: x[0])
+
+    return render(request, 'partials/mentor_list.html', {
+        'mentee': mentee,
+        'mentor_results': mentor_results
+    })
