@@ -13,34 +13,46 @@
         {% load crispy_forms_tags %}
         <form method="post" href="/newmentor">
             {% csrf_token %}
-            <h3>Primary Information</h3>
-            <div class="row" id="mentor-info">
-                {{ form|crispy }}
-            </div>
-            <h3>Contact Information</h3>
-            <div class="row" id="contact-info">
-                {{ contact_form|crispy }}
-            </div>
-            <h3>Preferences</h3>
-            <div class="row" id="preference-info">
-                {{ preference_form|crispy }}
-            </div>
-            <h3>Education History (max 3)</h3>
-            <div class="row" id="education-info">
-                {{ education_form|crispy }}
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <button id="add-school" class="btn float-right">Add Another School</button>
+            <div class="card">
+                <h3>Primary Information</h3>
+                <div class="row" id="mentor-info">
+                    {{ form|crispy }}
                 </div>
             </div>
-            <h3>Employment History (max 3)</h3>
-            <div class="row" id="employment-info">
-                {{ employment_form|crispy }}
+            <div class="card">
+                <h3>Contact Information</h3>
+                <div class="row" id="contact-info">
+                    {{ contact_form|crispy }}
+                </div>
             </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <button id="add-employer" class="btn float-right">Add Another Employer</button>
+            <div class="card">
+                <h3>Preferences</h3>
+                <div class="row" id="preference-info">
+                    {{ preference_form|crispy }}
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Education History (max 3)</h3>
+                <div class="row" id="education-info">
+                    {{ education_form|crispy }}
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <button id="add-school" class="btn float-right">Add Another School</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Employment History (max 3)</h3>
+                <div class="row" id="employment-info">
+                    {{ employment_form|crispy }}
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <button id="add-employer" class="btn float-right">Add Another Employer</button>
+                    </div>
                 </div>
             </div>
             <br>
@@ -81,7 +93,7 @@
             for (var i = 1; i < employmentForms.length; i++)
                 $(employmentForms[i]).css('margin-top', '30px').hide();
 
-            $('#add-employer').click(function(e) {
+            $('#add-employer').click(function (e) {
                 e.preventDefault();
                 $(employmentForms[employment_count]).show();
                 employment_count += 1;
@@ -89,7 +101,7 @@
                     $(this).hide();
                 }
             });
-            $('#add-school').click(function(e) {
+            $('#add-school').click(function (e) {
                 e.preventDefault();
                 $(educationForms[education_count]).show();
                 education_count += 1;

@@ -13,21 +13,29 @@
         {% load crispy_forms_tags %}
         <form method="post" href="/newmentee">
             {% csrf_token %}
-            <h3>Primary Information</h3>
-            <div class="row" id="mentee-info">
-                {{ form|crispy }}
+
+            <div class="card"><h3>Primary Information</h3>
+                <div class="row" id="mentee-info">
+                    {{ form|crispy }}
+                </div>
             </div>
-            <h3>Contact Information</h3>
-            <div class="row" id="contact-info">
-                {{ contact_form|crispy }}
+
+            <div class="card"><h3>Contact Information</h3>
+                <div class="row" id="contact-info">
+                    {{ contact_form|crispy }}
+                </div>
             </div>
-            <h3>Preferences</h3>
-            <div class="row" id="preference-info">
-                {{ preference_form|crispy }}
+
+            <div class="card"><h3>Preferences</h3>
+                <div class="row" id="preference-info">
+                    {{ preference_form|crispy }}
+                </div>
             </div>
-            <h3>Education</h3>
-            <div class="row" id="education-info">
-                {{ education_form|crispy }}
+
+            <div class="card"><h3>Education</h3>
+                <div class="row" id="education-info">
+                    {{ education_form|crispy }}
+                </div>
             </div>
             <br>
             <br>
