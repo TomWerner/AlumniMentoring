@@ -13,19 +13,30 @@
                     <th>Active</th>
                     <th>Start Date</th>
                     <th>End Date</th>
+                    <th></th>
                 </tr>
                 </thead>
                 {% for pairing in pairings %}
                     <tr>
-                        <td>
-                            <a href="/honorsAdmin/mentor/{{ pairing.mentor_id }}/view/" class="popup">{{ pairing.mentor.full_name }}</a>
+                        <td class="vert-center-td">
+                            <a href="/honorsAdmin/mentor/{{ pairing.mentor_id }}/view/"
+                               class="popup">{{ pairing.mentor.full_name }}</a>
                         </td>
-                        <td>
-                            <a href="/honorsAdmin/mentee/{{ pairing.mentee_id }}/view/" class="popup">{{ pairing.mentee.full_name }}</a>
+                        <td class="vert-center-td">
+                            <a href="/honorsAdmin/mentee/{{ pairing.mentee_id }}/view/"
+                               class="popup">{{ pairing.mentee.full_name }}</a>
                         </td>
-                        <td>{{ pairing.is_active }}</td>
-                        <td>{{ pairing.start_date }}</td>
-                        <td>{{ pairing.end_date }}</td>
+                        <td class="vert-center-td">{{ pairing.is_active }}</td>
+                        <td class="vert-center-td">{{ pairing.start_date }}</td>
+                        <td class="vert-center-td">{{ pairing.end_date }}</td>
+                        <td>
+                            {% if pairing.is_active %}
+                                <a class="btn btn-danger"
+                                   href="/honorsAdmin/endPairing?mentor_id={{ pairing.mentor_id }}&mentee_id={{ pairing.mentee_id }}">
+                                    End Pair
+                                </a>
+                            {% endif %}
+                        </td>
                     </tr>
                 {% endfor %}
             </table>

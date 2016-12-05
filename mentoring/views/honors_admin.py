@@ -233,4 +233,17 @@ def create_pairing(request):
 
     pair = MentorMenteePairs(mentee=mentee, mentor=mentor, start_date=datetime.date.today())
     pair.save()
-    return redirect('/honorsAdmin/mentee/0/getallmatches')
+    return redirect('/honorsAdmin/mentee/0/getallmatches', request=request)
+
+
+@login_required
+def end_pairing(request):
+    if 'mentee_id' not in request.GET or 'mentor_id' not in request.GET:
+        return HttpResponseRedirect(redirect_to='/honorsAdmin', status=404)
+    pair = MentorMenteePairs.objects.filter(mentor_id=request.GET['mentor_id'], mentee_id=request.GET['mentee_id']).first()
+    if pair is None:
+        return HttpResponseRedirect(redirect_to='/honorsAdmin', status=404)
+    else:
+        pair.end_date = datetime.date.today()
+        pair.save()
+        return redirect('/honorsAdmin/pairs', request=request)

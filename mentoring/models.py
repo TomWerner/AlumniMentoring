@@ -114,7 +114,7 @@ class Mentee(models.Model):
 
     def has_no_mentor(self):
         pairs = self.mentormenteepairs_set.all()
-        return len(pairs) == 0
+        return len([x for x in pairs if x.is_active()]) == 0
 
     def score_mentor(self, mentor: Mentor):
         score = 0
@@ -275,7 +275,7 @@ class MentorMenteePairs(models.Model):
     comments = models.TextField(null=True, blank=True)
 
     def is_active(self):
-        return self.end_date is None or self.end_date >= datetime.date.today()
+        return self.end_date is None or self.end_date > datetime.date.today()
 
     def __str__(self):
         return str(self.mentor) + " and " + str(self.mentee) + " (" + str(self.start_date) + " to " + str(
