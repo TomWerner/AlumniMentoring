@@ -35,7 +35,7 @@ def home(request):
     num_pairs = len(pairs)
     num_active_pairs = len([x for x in pairs if x.is_active()])
 
-    matchless_mentees = Mentee.objects.all()
+    matchless_mentees = Mentee.objects.filter(approved=True)
     matchless_mentees = [x for x in matchless_mentees if x.has_no_mentor()]
 
     return render(request, 'admin/honors_admin_home.html', {
@@ -192,7 +192,7 @@ def mentee_get_matches(request, mentee_id):
 
 @login_required
 def mentee_get_all_matches(request, mentee_id):
-    matchless_mentees = Mentee.objects.all()
+    matchless_mentees = Mentee.objects.filter(approved=True)
     matchless_mentees = [x for x in matchless_mentees if x.has_no_mentor()]
 
     mentee = Mentee.objects.filter(pk=mentee_id).first()
@@ -240,7 +240,8 @@ def create_pairing(request):
 def end_pairing(request):
     if 'mentee_id' not in request.GET or 'mentor_id' not in request.GET:
         return HttpResponseRedirect(redirect_to='/honorsAdmin', status=404)
-    pair = MentorMenteePairs.objects.filter(mentor_id=request.GET['mentor_id'], mentee_id=request.GET['mentee_id']).first()
+    pair = MentorMenteePairs.objects.filter(mentor_id=request.GET['mentor_id'], mentee_id=request.GET['mentee_id'],
+                                            end_date__isnull=True).first()
     if pair is None:
         return HttpResponseRedirect(redirect_to='/honorsAdmin', status=404)
     else:

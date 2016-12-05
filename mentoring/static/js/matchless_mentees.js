@@ -33,6 +33,7 @@ $(document).ready(function () {
         var mentee_id = $('li.current >> .mentee_id').val();
         $.get('/honorsAdmin/mentee/' + mentee_id + '/getallmatcheslist').success(function (e) {
             $("#mentor_list").html(e);
+            setup_popups();
         });
     }
 

@@ -150,7 +150,7 @@ class MentorContactInformation(models.Model):
 
     def email(self):
         result = self.primary_email
-        if self.secondary_email is not None:
+        if self.secondary_email is not None and len(self.secondary_email) > 0:
             result += "\n(" + self.secondary_email + ")"
         return result
 
@@ -175,7 +175,7 @@ class MenteeContactInformation(models.Model):
     secondary_phone = models.CharField(max_length=20, null=True, blank=True)
 
     primary_email = models.EmailField()
-    secondary_email = models.EmailField()
+    secondary_email = models.EmailField(null=True, blank=True)
 
     linkedin_url = models.CharField(max_length=100, null=True, blank=True)
     facebook_url = models.CharField(max_length=100, null=True, blank=True)
@@ -187,7 +187,7 @@ class MenteeContactInformation(models.Model):
 
     def email(self):
         result = self.primary_email
-        if self.secondary_email is not None:
+        if self.secondary_email is not None and len(self.secondary_email) > 0:
             result += "\n(" + self.secondary_email + ")"
         return result
 

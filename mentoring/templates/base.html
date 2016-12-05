@@ -14,7 +14,7 @@
     {% block head %}{% endblock %}
 </head>
 <body>
-<nav class="navbar navbar-inverse">
+<nav class="navbar navbar-inverse navbar-fixed-top">
     <div class="container">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
@@ -28,6 +28,9 @@
             <ul class="nav navbar-nav">
                 {% if user.is_superuser %}
                     <li><a href="/honorsAdmin">Admin Home</a></li>
+                    <li><a href="/honorsAdmin/mentors">Mentors</a></li>
+                    <li><a href="/honorsAdmin/mentees">Mentees</a></li>
+                    <li><a href="/honorsAdmin/pairs">Mentor/Mentee Pairs</a></li>
                     <li><a href="/honorsAdmin/mentee/0/getallmatches">Matchless Mentees</a></li>
                 {% endif %}
             </ul>
@@ -36,6 +39,7 @@
         </div>
     </div>
 </nav>
+<div style="padding-top: 50px"></div>
 {% if messages %}
     {% for message in messages %}
         {% if message.level == 40 %} {# Error #}
@@ -45,7 +49,9 @@
 {% endif %}
 
 
-{% block content %}{% endblock %}
+<div style="padding-top: 15px; padding-bottom: 15px;">
+    {% block content %}{% endblock %}
+</div>
 
 
 <div id="viewing-modal" class="modal fade" role="dialog">

@@ -61,7 +61,7 @@ def new_mentee(request):
         education_form = MenteeEducationFormSet(request.POST)
         preference_form = MenteePreferenceFormSet(request.POST)
 
-        if mentee_form.is_valid() and contact_form.is_valid() and education_form.is_valid():
+        if mentee_form.is_valid() and contact_form.is_valid() and education_form.is_valid() and preference_form.is_valid():
             mentee = mentee_form.save()
             contact_form.instance = mentee
             contact_form.save()
