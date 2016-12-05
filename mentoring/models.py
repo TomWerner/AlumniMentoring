@@ -116,19 +116,19 @@ class Mentee(models.Model):
         pairs = self.mentormenteepairs_set.all()
         return len([x for x in pairs if x.is_active()]) == 0
 
-    def score_mentor(self, mentor: Mentor):
+    def score_mentor(self, mentor):
         score = 0
         score += self._score_mentor_preferences(mentor)
         score += self._score_mentor_education(mentor)
 
         return score
 
-    def _score_mentor_preferences(self, mentor: Mentor):
+    def _score_mentor_preferences(self, mentor):
         if self.menteepreference is None:
             return 0
         return self.menteepreference.score_mentor(mentor)
 
-    def _score_mentor_education(self, mentor: Mentor):
+    def _score_mentor_education(self, mentor):
         return sum([x.score_mentor(mentor) for x in self.menteeeducation_set.all()])
 
 
@@ -238,7 +238,7 @@ class MenteeEducation(models.Model):
                "Major(s): " + ", ".join(x for x in [self.major1, self.major2] if x is not None) + "\n" + \
                "Minor(s): " + ", ".join(x for x in [self.minor1, self.minor2] if x is not None) + "\n"
 
-    def score_mentor(self, mentor: Mentor):
+    def score_mentor(self, mentor):
         score = 0
         for education in mentor.mentoreducation_set.all():
             majors = [education.major1, education.major2]
