@@ -32,7 +32,7 @@
                 <ol class="content">
                     {% for score, mentor in mentor_results %}
                         <li>
-                            <input type="hidden" value="{{ mentor.id }}">
+                            <input type="hidden" value="{{ mentor.id }}" class="mentor_id">
                             <h3>{{ mentor.full_name }} &nbsp; (Score: {{ score }})</h3>
 
                             <h4>Email</h4>
@@ -174,9 +174,14 @@
     });
     navigate(0);
 
-
     var mentee_id = $('#mentee_id').val();
     $('#see_all_mentors').on('click', function(e) {
         window.location = "/honorsAdmin/mentee/" + mentee_id + "/getAllMatches";
+    });
+
+
+    $('#use_this_mentor').on('click', function(e){
+        var mentor_id = $('li.current > .mentor_id').val();
+        window.location = "/honorsAdmin/createPairing?mentor_id=" + mentor_id + "&mentee_id=" + mentee_id;
     });
 </script>

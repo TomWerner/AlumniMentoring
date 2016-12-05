@@ -18,10 +18,10 @@
                 {% for pairing in pairings %}
                     <tr>
                         <td>
-                            <a href="/admin/mentoring/mentor/{{ pairing.mentor_id }}/view/">{{ pairing.mentor.full_name }}</a>
+                            <a href="/honorsAdmin/mentor/{{ pairing.mentor_id }}/view/" class="popup">{{ pairing.mentor.full_name }}</a>
                         </td>
                         <td>
-                            <a href="/admin/mentoring/mentee/{{ pairing.mentee_id }}/view/">{{ pairing.mentee.full_name }}</a>
+                            <a href="/honorsAdmin/mentee/{{ pairing.mentee_id }}/view/" class="popup">{{ pairing.mentee.full_name }}</a>
                         </td>
                         <td>{{ pairing.is_active }}</td>
                         <td>{{ pairing.start_date }}</td>

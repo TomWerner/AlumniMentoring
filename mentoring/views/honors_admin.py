@@ -31,9 +31,9 @@ def home(request):
                               mentormenteepairs__end_date__gt=datetime.date.today()).values_list('id')))
     pending_mentees = Mentee.objects.filter(approved=False)
 
-    num_pairs = MentorMenteePairs.objects.count()
-    num_active_pairs = MentorMenteePairs.objects.filter(
-        Q(end_date__isnull=False) | Q(end_date__lt=datetime.date.today())).count()
+    pairs = MentorMenteePairs.objects.all()
+    num_pairs = len(pairs)
+    num_active_pairs = len([x for x in pairs if x.is_active()])
 
     matchless_mentees = Mentee.objects.all()
     matchless_mentees = [x for x in matchless_mentees if x.has_no_mentor()]
@@ -165,6 +165,7 @@ def mentor_approve(request, mentor_id):
     return redirect('/honorsAdmin', request=request)
 
 
+@login_required
 def mentee_get_matches(request, mentee_id):
     mentee = get_object_or_404(Mentee, pk=mentee_id)
 
@@ -189,14 +190,23 @@ def mentee_get_matches(request, mentee_id):
     })
 
 
+@login_required
 def mentee_get_all_matches(request, mentee_id):
-    mentee = get_object_or_404(Mentee, pk=mentee_id)
+    matchless_mentees = Mentee.objects.all()
+    matchless_mentees = [x for x in matchless_mentees if x.has_no_mentor()]
+
+    mentee = Mentee.objects.filter(pk=mentee_id).first()
+
+    if mentee and mentee.id in [x.id for x in matchless_mentees]:
+        matchless_mentees.remove(mentee)
+        matchless_mentees = [mentee] + matchless_mentees
 
     return render(request, 'admin/honors_admin_get_all_matches.html', {
-        'mentee': mentee
+        'matchless_mentees': matchless_mentees
     })
 
 
+@login_required
 def mentee_get_all_matches_list(request, mentee_id):
     mentee = get_object_or_404(Mentee, pk=mentee_id)
 
@@ -212,3 +222,15 @@ def mentee_get_all_matches_list(request, mentee_id):
         'mentee': mentee,
         'mentor_results': mentor_results
     })
+
+
+@login_required
+def create_pairing(request):
+    if 'mentee_id' not in request.GET or 'mentor_id' not in request.GET:
+        return HttpResponseRedirect(redirect_to='/honorsAdmin', status=404)
+    mentor = get_object_or_404(Mentor, pk=request.GET['mentor_id'])
+    mentee = get_object_or_404(Mentee, pk=request.GET['mentee_id'])
+
+    pair = MentorMenteePairs(mentee=mentee, mentor=mentor, start_date=datetime.date.today())
+    pair.save()
+    return redirect('/honorsAdmin/mentee/0/getallmatches')

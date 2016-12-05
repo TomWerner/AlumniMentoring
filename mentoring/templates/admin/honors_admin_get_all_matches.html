@@ -2,50 +2,128 @@
 
 {% block head %}
     {% load staticfiles %}
-    <script src="{% static 'js/matchless_mentees.js' %}"></script>
+    {% if matchless_mentees|length > 0 %}
+        <script src="{% static 'js/matchless_mentees.js' %}"></script>
+    {% endif %}
 {% endblock %}
 
 {% block content %}
     <div class="container">
-        <div class="row">
-            <div class="col-md-4">
-                <div class="affix">
+        {% if matchless_mentees|length == 0 %}
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-6 card">
+                    <h2 style="text-align: center">All Mentees have matches!</h2>
+                </div>
+            </div>
+        {% else %}
 
-                    <div class="card">
-                        <h2>Matchless Mentees</h2>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="affix">
+
+                        <div class="card">
+                            <h2 style="text-align: center">Matchless Mentees</h2>
+                            <button id="prev" class="btn btn-primary"
+                                    style="position: absolute;left: 10px;height:50px;top:35px">
+                                <
+                            </button>
+                            <button id="next" class="btn btn-primary"
+                                    style="position: absolute;right: 10px;height:50px;top:35px">
+                                >
+                            </button>
+                        </div>
+
+                        <div class="carouselbox">
+                            <ol class="content">
+                                {% for mentee in matchless_mentees %}
+                                    <li>
+                                        <div class="card">
+                                            <h3>{{ mentee.full_name }}</h3>
+                                            <input type="hidden" value="{{ mentee.id }}" class="mentee_id">
+
+                                            <h4>Email</h4>
+                                            <div>{{ mentee.email|linebreaks }}</div>
+
+                                            <h4>Phone</h4>
+                                            <div>{{ mentee.phone_number }}</div>
+
+                                            <h4>Address</h4>
+                                            <div>{{ mentee.mailing_address|linebreaks }}</div>
+
+                                            <h4>Web Contacts</h4>
+                                            <div>{{ mentee.web_contacts|linebreaks }}</div>
+
+                                            <h4>Education</h4>
+                                            <div>{{ mentee.education|linebreaks }}</div>
+
+                                            <h4>Work</h4>
+                                            <div>{{ mentee.employment|linebreaks }}</div>
+
+                                            <h4>Preferences</h4>
+                                            <div>{{ mentee.preferences|linebreaks }}</div>
+                                        </div>
+                                    </li>
+                                {% endfor %}
+                            </ol>
+                        </div>
                     </div>
-                    <div class="card">
-                        <h3>{{ mentee.full_name }}</h3>
-                        <input type="hidden" value="{{ mentee.id }}" id="mentee_id">
+                </div>
+                <div class="col-md-offset-5 col-md-7">
+                    <div id="mentor_list">
 
-                        <h4>Email</h4>
-                        <div>{{ mentee.email|linebreaks }}</div>
-
-                        <h4>Phone</h4>
-                        <div>{{ mentee.phone_number }}</div>
-
-                        <h4>Address</h4>
-                        <div>{{ mentee.mailing_address|linebreaks }}</div>
-
-                        <h4>Web Contacts</h4>
-                        <div>{{ mentee.web_contacts|linebreaks }}</div>
-
-                        <h4>Education</h4>
-                        <div>{{ mentee.education|linebreaks }}</div>
-
-                        <h4>Work</h4>
-                        <div>{{ mentee.employment|linebreaks }}</div>
-
-                        <h4>Preferences</h4>
-                        <div>{{ mentee.preferences|linebreaks }}</div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-offset-5 col-md-7">
-                <div id="mentor_list">
-
-                </div>
-            </div>
-        </div>
+        {% endif %}
     </div>
+
+
+    <style type="text/css">
+        .carouselbox {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .content {
+            margin: 0;
+            padding: 0;
+        }
+
+        .content li {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            list-style: none;
+            z-index: 2;
+        }
+
+        .active {
+            height: 100%;
+        }
+
+        .carouselbox button {
+            border: none;
+            visibility: hidden;
+        }
+
+        .active button {
+            visibility: visible;
+        }
+
+        .active li {
+            display: none;
+            opacity: 0;
+            transform: scale(0);
+            transition: 1s;
+        }
+
+        .active li.current {
+            display: block;
+            opacity: 1;
+            transform: scale(1);
+            transition: 1s;
+        }
+    </style>
 {% endblock %}

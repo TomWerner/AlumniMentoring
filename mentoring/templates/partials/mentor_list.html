@@ -2,10 +2,14 @@
     <div class="card">
         <div class="row">
             <div class="col-md-12">
-
+                <input type="hidden" value="{{ mentor.id }}" id="mentor_id">
                 <h3>
                     <a href="/honorsAdmin/mentor/{{ mentor.id }}/view" class="popup">
                         {{ mentor.full_name }} (Match score: {{ score }})
+                    </a>
+
+                    <a class="btn btn-default" href="/honorsAdmin/createPairing?mentor_id={{ mentor.id }}&mentee_id={{ mentee.id }}" style="float: right">
+                        Make Mentor
                     </a>
                 </h3>
             </div>
@@ -27,7 +31,7 @@
                 <div>{{ mentor.preferences|linebreaks }}</div>
             </div>
         </div>
-
-
+        <div class="row">
+        </div>
     </div>
 {% endfor %}
