@@ -154,6 +154,7 @@ EMAIL_PORT = 587
 try:
     from .local_settings import *
 except ImportError:
+    # Production settings
     EMAIL_HOST_PASSWORD = os.environ.get('GMAIL_PASSWORD', None)
     EMAIL_HOST_USER = os.environ.get('GMAIL_USERNAME', None)
     DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
@@ -164,3 +165,4 @@ except ImportError:
     SECURE_BROWSER_XSS_FILTER = True
     CSRF_COOKIE_SECURE = True
     X_FRAME_OPTIONS = 'DENY'
+    CSRF_COOKIE_HTTPONL = True
