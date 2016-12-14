@@ -13,7 +13,7 @@ from mentoring.models import Mentor, Mentee, MentorMenteePairs
 @login_required
 def home(request):
     if not request.user.is_superuser:
-        return HttpResponseRedirect('/', status=403)
+        return HttpResponseRedirect('/', status=403, request=request)
 
     num_mentors = Mentor.objects.filter(approved=True).count()
 
@@ -241,7 +241,7 @@ def mentee_get_all_matches_list(request, mentee_id):
 @login_required
 def create_pairing(request):
     if 'mentee_id' not in request.GET or 'mentor_id' not in request.GET:
-        return HttpResponseRedirect(redirect_to='/honorsAdmin', status=404)
+        return HttpResponseRedirect(redirect_to='/honorsAdmin', status=404, request=request)
     mentor = get_object_or_404(Mentor, pk=request.GET['mentor_id'])
     mentee = get_object_or_404(Mentee, pk=request.GET['mentee_id'])
 
@@ -253,11 +253,11 @@ def create_pairing(request):
 @login_required
 def end_pairing(request):
     if 'mentee_id' not in request.GET or 'mentor_id' not in request.GET:
-        return HttpResponseRedirect(redirect_to='/honorsAdmin', status=404)
+        return HttpResponseRedirect(redirect_to='/honorsAdmin', status=404, request=request)
     pair = MentorMenteePairs.objects.filter(mentor_id=request.GET['mentor_id'], mentee_id=request.GET['mentee_id'],
                                             end_date__isnull=True).first()
     if pair is None:
-        return HttpResponseRedirect(redirect_to='/honorsAdmin', status=404)
+        return HttpResponseRedirect(redirect_to='/honorsAdmin', status=404, request=request)
     else:
         pair.end_date = datetime.date.today()
         pair.save()

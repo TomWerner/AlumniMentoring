@@ -36,7 +36,7 @@ def new_mentor(request):
             education_form.save()
             preference_form.instance = mentor
             preference_form.save()
-            return redirect('/thankyoumentor')
+            return redirect('/thankyoumentor', request=request)
 
     else:
         mentor_form = MentorForm()
@@ -69,7 +69,7 @@ def new_mentee(request):
             education_form.save()
             preference_form.instance = mentee
             preference_form.save()
-            return redirect('/thankyoumentee')
+            return redirect('/thankyoumentee', request=request)
 
     else:
         mentee_form = MenteeForm()
