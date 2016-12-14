@@ -158,10 +158,24 @@ def mentee_approve(request, mentee_id):
 
 
 @login_required
+def mentee_deny(request, mentee_id):
+    mentee = get_object_or_404(Mentee, pk=mentee_id)
+    mentee.delete()
+    return redirect('/honorsAdmin', request=request)
+
+
+@login_required
 def mentor_approve(request, mentor_id):
     mentor = get_object_or_404(Mentor, pk=mentor_id)
     mentor.approved = True
     mentor.save()
+    return redirect('/honorsAdmin', request=request)
+
+
+@login_required
+def mentor_deny(request, mentor_id):
+    mentor = get_object_or_404(Mentor, pk=mentor_id)
+    mentor.delete()
     return redirect('/honorsAdmin', request=request)
 
 

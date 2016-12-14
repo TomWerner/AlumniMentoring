@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 import os
 import dj_database_url
 
-COMPILEBOX_URL = "http://52.24.112.112"
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
@@ -146,3 +145,18 @@ AUTHENTICATION_BACKENDS = (
 )
 
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
+
+EMAIL_USE_TLS = True
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+
+try:
+    from .local_settings import *
+except ImportError:
+    EMAIL_HOST_PASSWORD = os.environ.get('GMAIL_PASSWORD', None)
+    EMAIL_HOST_USER = os.environ.get('GMAIL_USERNAME', None)
+    DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+    ALLOWED_HOSTS = [os.environ.get('HOST_URL', None)]
+    DEBUG = False
+    SECRET_KEY = os.environ.get('SECRET_KEY', None)

@@ -26,6 +26,13 @@ $(document).ready(function () {
                 }
             });
         });
+
+        $('.deny').on('click', function(e) {
+            var r = confirm("Are you sure? This will delete the user!");
+            if (r == false) {
+                e.preventDefault();
+            }
+        });
     };
     setup_popups();
 });

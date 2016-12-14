@@ -37,10 +37,10 @@
                     <h4>Pending Mentors</h4>
                     <thead>
                     <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Gender</th>
-                        <th></th>
+                        <th width="30%">Name</th>
+                        <th width="30%">Email</th>
+                        <th width="20%">Gender</th>
+                        <th width="20%"></th>
                     </tr>
                     </thead>
                     {% for mentor in pending_mentors %}
@@ -52,10 +52,14 @@
                             </td>
                             <td class="vert-center-td">{{ mentor.mentorcontactinformation.primary_email }}</td>
                             <td class="vert-center-td">{{ mentor.get_gender_display }}</td>
-                            <td class="vert-center-td">
+                            <td class="vert-center-td" style="max-width: 50px; text-align: right">
                                 <a href="/honorsAdmin/mentor/{{ mentor.id }}/approve"
                                    class="btn btn-primary approve">
                                     Approve
+                                </a>
+                                <a href="/honorsAdmin/mentor/{{ mentor.id }}/deny"
+                                   class="btn btn-danger deny">
+                                    Deny
                                 </a>
                             </td>
                         </tr>
@@ -68,10 +72,10 @@
                     <h4>Pending Mentees</h4>
                     <thead>
                     <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Gender</th>
-                        <th></th>
+                        <th width="30%">Name</th>
+                        <th width="30%">Email</th>
+                        <th width="20%">Gender</th>
+                        <th width="20%"></th>
                     </tr>
                     </thead>
                     {% for mentee in pending_mentees %}
@@ -83,10 +87,14 @@
                             </td>
                             <td class="vert-center-td">{{ mentee.menteecontactinformation.primary_email }}</td>
                             <td class="vert-center-td">{{ mentee.get_gender_display }}</td>
-                            <td class="vert-center-td">
+                            <td class="vert-center-td"  style="max-width: 50px; text-align: right">
                                 <a href="/honorsAdmin/mentee/{{ mentee.id }}/approve"
                                    class="btn btn-primary approve">
                                     Approve
+                                </a>
+                                <a href="/honorsAdmin/mentee/{{ mentee.id }}/deny"
+                                   class="btn btn-danger deny">
+                                    Deny
                                 </a>
                             </td>
                         </tr>
@@ -104,10 +112,10 @@
                 <table class="table">
                     <thead>
                     <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Gender</th>
-                        <th></th>
+                        <th width="30%">Name</th>
+                        <th width="30%">Email</th>
+                        <th width="20%">Gender</th>
+                        <th width="20%"></th>
                     </tr>
                     </thead>
                     {% for mentee in matchless_mentees %}
@@ -119,7 +127,7 @@
                             </td>
                             <td class="vert-center-td">{{ mentee.menteecontactinformation.primary_email }}</td>
                             <td class="vert-center-td">{{ mentee.get_gender_display }}</td>
-                            <td class="vert-center-td">
+                            <td class="vert-center-td" style="max-width: 50px; text-align: right">
                                 <a href="/honorsAdmin/mentee/{{ mentee.id }}/getmatches" class="btn btn-primary popup">
                                     Get Matches
                                 </a>
