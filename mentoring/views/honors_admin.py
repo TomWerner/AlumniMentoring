@@ -298,15 +298,15 @@ def preview_invite(request):
 
 
 def send_invite(request):
-    personal_message = request.GET.get('personal_message', None)
-    role = request.GET.get('role', '')
-    name = request.GET.get('name', '')
-    email = request.GET.get('email_address', '')
+    personal_message = request.POST.get('personal_message', None)
+    role = request.POST.get('role', '')
+    name = request.POST.get('name', '')
+    email = request.POST.get('email_address', '')
 
     message = build_invite_message(settings.CURRENT_HOST, name, role, personal_message)
 
     from_email = 'Iowa Honors Mentoring <%s>' % settings.EMAIL_HOST_USER
-    to = email
+    to = str(email)
     msg = EmailMultiAlternatives('Iowa Honors Mentoring Invitation', message, from_email, [to])
     msg.attach_alternative(render_to_string('email/basic_email.html', {
         'message': message
