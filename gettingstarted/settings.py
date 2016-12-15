@@ -160,6 +160,7 @@ except ImportError:
     EMAIL_HOST_USER = os.environ.get('GMAIL_USERNAME', None)
     DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
     ALLOWED_HOSTS = [os.environ.get('HOST_URL', None)]
+    CURRENT_HOST = os.environ.get('HOST_URL', None)
     DEBUG = False
     SECRET_KEY = os.environ.get('SECRET_KEY', None)
     SECURE_CONTENT_TYPE_NOSNIFF = True

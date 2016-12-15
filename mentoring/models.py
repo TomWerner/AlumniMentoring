@@ -2,7 +2,6 @@ import datetime
 
 from django.contrib.auth.models import User
 from django.db import models
-from django.conf import settings
 
 genders = (('m', 'Male'), ('f', 'Female'))
 degree_options = (('ba', 'Bachelor of Arts'),
@@ -47,6 +46,12 @@ class Mentor(models.Model):
     gender = models.CharField(max_length=1, choices=genders)
     active = models.BooleanField(default=True)
     approved = models.BooleanField(default=False)
+    confirmed = models.BooleanField(default=False)
+    confirmation_token = models.CharField(max_length=50, null=True, blank=True)
+    active_until = models.DateTimeField(null=True, blank=True)
+
+    def primary_email(self):
+        return self.mentorcontactinformation.primary_email
 
     def full_name(self):
         return self.first_name + " " + self.last_name
@@ -83,6 +88,9 @@ class Mentee(models.Model):
     gender = models.CharField(max_length=1, choices=genders)
     active = models.BooleanField(default=True)
     approved = models.BooleanField(default=False)
+    confirmed = models.BooleanField(default=False)
+    confirmation_token = models.CharField(max_length=50, null=True, blank=True)
+    active_until = models.DateTimeField(null=True, blank=True)
 
     def full_name(self):
         return self.first_name + " " + self.last_name
@@ -90,6 +98,9 @@ class Mentee(models.Model):
     def __str__(self):
         approved = "Approved" if self.approved else "Not Approved"
         return self.full_name() + "(" + approved + ")"
+
+    def primary_email(self):
+        return self.menteecontactinformation.primary_email
 
     def email(self):
         return self.menteecontactinformation.email()

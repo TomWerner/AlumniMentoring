@@ -2,6 +2,17 @@ from django.contrib import admin
 from .models import *
 
 
+class MentorMenteePairInline(admin.TabularInline):
+    model = MentorMenteePairs
+    fields = (
+        'mentor',
+        'mentee',
+        'start_date',
+        'end_date',
+        'comments'
+    )
+
+
 class MentorContactInline(admin.StackedInline):
     model = MentorContactInformation
     fieldsets = (
@@ -53,7 +64,10 @@ class MentorAdmin(admin.ModelAdmin):
         'last_name',
         'gender',
         'active',
-        'approved'
+        'approved',
+        'confirmed',
+        'confirmation_token',
+        'active_until',
     )
     list_display = ('first_name', 'last_name', 'active')
 
@@ -62,6 +76,7 @@ class MentorAdmin(admin.ModelAdmin):
         MentorEducationInline,
         MentorCareerInline,
         MentorPreferenceInline,
+        MentorMenteePairInline,
     ]
 
 
@@ -105,7 +120,10 @@ class MenteeAdmin(admin.ModelAdmin):
         'last_name',
         'gender',
         'active',
-        'approved'
+        'approved',
+        'confirmed',
+        'confirmation_token',
+        'active_until',
     )
     list_display = ('first_name', 'last_name', 'active')
 
@@ -113,15 +131,6 @@ class MenteeAdmin(admin.ModelAdmin):
         MenteeContactInline,
         MenteeEducationInline,
         MenteePreferenceInline,
+        MentorMenteePairInline,
     ]
 
-
-@admin.register(MentorMenteePairs)
-class MentorMenteePairAdmin(admin.ModelAdmin):
-    fields = (
-        'mentor',
-        'mentee',
-        'start_date',
-        'end_date',
-        'comments'
-    )

@@ -4,6 +4,12 @@
 <html>
 <head>
     <title>PSP Mentoring</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="{% static 'bower_components/bootstrap/dist/css/bootstrap.min.css' %}"/>
+    <script src="{% static 'bower_components/jquery/dist/jquery.min.js' %}"></script>
+    <script src="{% static 'bower_components/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}"/>
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
     <script>
         function getCookie(name) {
             var dc = document.cookie;
@@ -26,13 +32,6 @@
             headers: {"X-CSRFToken": getCookie("csrftoken")}
         });
     </script>
-
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" href="{% static 'bower_components/bootstrap/dist/css/bootstrap.min.css' %}"/>
-    <script src="{% static 'bower_components/jquery/dist/jquery.min.js' %}"></script>
-    <script src="{% static 'bower_components/bootstrap/dist/js/bootstrap.min.js' %}"></script>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}"/>
-    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
     <script src="{% static 'js/admin_home.js' %}"></script>
     {% block head %}{% endblock %}
 </head>
@@ -65,9 +64,7 @@
 <div style="padding-top: 50px"></div>
 {% if messages %}
     {% for message in messages %}
-        {% if message.level == 40 %} {# Error #}
-            <div class="alert alert-danger top-message"><strong>Error!</strong>&nbsp;{{ message }}</div>
-        {% endif %}
+        <div {% if message.tags %} class="alert top-message alert-{{ message.tags }}"{% endif %}>{{ message }}</div>
     {% endfor %}
 {% endif %}
 

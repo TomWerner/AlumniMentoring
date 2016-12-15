@@ -21,7 +21,7 @@ def home(request):
     num_active_mentors = len(set(
         Mentor.objects.filter(approved=True, mentormenteepairs__isnull=False,
                               mentormenteepairs__end_date__gt=datetime.date.today()).values_list('id')))
-    pending_mentors = Mentor.objects.filter(approved=False)
+    pending_mentors = Mentor.objects.filter(approved=False, confirmed=True)
 
     num_mentees = Mentee.objects.filter(approved=True).count()
 
@@ -29,7 +29,7 @@ def home(request):
     num_active_mentees = len(set(
         Mentee.objects.filter(approved=True, mentormenteepairs__isnull=False,
                               mentormenteepairs__end_date__gt=datetime.date.today()).values_list('id')))
-    pending_mentees = Mentee.objects.filter(approved=False)
+    pending_mentees = Mentee.objects.filter(approved=False, confirmed=True)
 
     pairs = MentorMenteePairs.objects.all()
     num_pairs = len(pairs)
@@ -153,7 +153,8 @@ def mentor_detail(request, mentor_id):
 def mentee_approve(request, mentee_id):
     mentee = get_object_or_404(Mentee, pk=mentee_id)
     mentee.approved = True
-    mentee.save()
+    # mentee.save()
+    mentee.send_email()
     return redirect('/honorsAdmin', request=request)
 
 

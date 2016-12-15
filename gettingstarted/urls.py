@@ -50,4 +50,6 @@ urlpatterns = [
 
     url(r'^(?i)newmentor/', views.new_mentor),
     url(r'^(?i)newmentee/', views.new_mentee),
+
+    url(r'^(?i)confirmation/', views.confirm_account),
 ]  # + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

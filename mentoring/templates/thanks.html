@@ -4,7 +4,12 @@
     <div class="container" style="text-align: center">
         <div class="card">
             <h2>{{ message }}</h2>
-            <a href="https://honors.uiowa.edu"><h3>back to Honors</h3></a>
+            {% if confirmation_pending %}
+            Your confirmation email has been sent. If it hasn't been received in 5 minutes, check your spam folder.
+            {% elif not messages %}
+                Your email has been confirmed and you will be notified once your account has been approved.
+            {% endif %}
+            <a href="https://honors.uiowa.edu"><h3>Back to Honors</h3></a>
         </div>
     </div>
 {% endblock %}
