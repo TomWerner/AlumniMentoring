@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block head %}
+    {% load staticfiles %}
+    <script src="{% static 'js/invite.js' %}"></script>
+{% endblock %}
+
+
+{% block content %}
+    <div class="container">
+        <div class="card">
+            <h1>Send an Invitation</h1>
+            <form method="post" action="/honorsAdmin/send_invite/" id="invite_form">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-md-4 form-group">
+                        <label for="email_address">Email address</label>
+                        <input type="email" class="form-control" id="email_address" name="email_address"
+                               aria-describedby="emailHelp" placeholder="Enter email">
+                    </div>
+                    <div class="col-md-4 form-group">
+                        <label for="name">Name</label>
+                        <input type="text" class="form-control" id="name" name="name" placeholder="Name">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="mentor_mentee">Role</label>
+                        <div class="controls ">
+                            <select class="select form-control" id="role" name="role">
+                                <option value="mentor">Mentor</option>
+                                <option value="mentee">Mentee</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-12">
+                        <label for="personal_message">Optional personal message</label>
+                        <textarea id="personal_message" rows="3" class="form-control" name="personal_message"></textarea>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-3 col-md-offset-9" style="text-align:right">
+                        <button id="preview_email" class="btn btn-default">Preview Email</button>
+                        <input type="submit" id="send_email" class="btn btn-primary" value="Send Email"/>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

@@ -225,7 +225,7 @@ class MentorEducation(models.Model):
     minor1 = models.CharField(max_length=100, blank=True, null=True)
     minor2 = models.CharField(max_length=100, blank=True, null=True)
     degree = models.CharField(max_length=3, choices=degree_options)
-    graduation_year = models.DateField()
+    graduation_year = models.DateField(null=True, blank=True)
 
     def display_string(self):
         return self.school + \

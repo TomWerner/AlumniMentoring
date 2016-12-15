@@ -54,6 +54,7 @@
                     <li><a href="/honorsAdmin/mentees">Mentees</a></li>
                     <li><a href="/honorsAdmin/pairs">Mentor/Mentee Pairs</a></li>
                     <li><a href="/honorsAdmin/mentee/0/getallmatches">Matchless Mentees</a></li>
+                    <li><a href="/honorsAdmin/sendInvite">Invite</a></li>
                 {% endif %}
             </ul>
             <ul class="nav navbar-nav navbar-right">
@@ -64,7 +65,7 @@
 <div style="padding-top: 50px"></div>
 {% if messages %}
     {% for message in messages %}
-        <div {% if message.tags %} class="alert top-message alert-{{ message.tags }}"{% endif %}>{{ message }}</div>
+        <div {% if message.tags %} class="alert top-message alert-{{ message.tags }} {% if message.tags == 'error' %}alert-danger{% endif %}"{% endif %}>{{ message }}</div>
     {% endfor %}
 {% endif %}
 

@@ -38,6 +38,9 @@ urlpatterns = [
     url(r'^(?i)honorsAdmin/endPairing', honors_admin.end_pairing),
     url(r'^(?i)honorsAdmin/pairs/$', honors_admin.pairings),
     url(r'^(?i)honorsAdmin/export/$', honors_admin.export),
+    url(r'^(?i)honorsAdmin/invite/$', honors_admin.invitations),
+    url(r'^(?i)honorsAdmin/send_invite/$', honors_admin.send_invite),
+    url(r'^(?i)honorsAdmin/preview_invite/$', honors_admin.preview_invite),
 
 
     # Default django stuff

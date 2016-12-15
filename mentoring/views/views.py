@@ -58,6 +58,7 @@ def new_mentor(request):
         employment_form = MentorEmploymentFormSet()
         preference_form = MentorPreferenceFormSet()
 
+    messages.error(request, 'There were errors in your submission. Please correct them and submit again.')
     return render(request, 'new_mentor.html', {
         'form': mentor_form,
         'contact_form': contact_form,
@@ -69,9 +70,7 @@ def new_mentor(request):
 
 def generate_confirmation_token(email_address):
     salt = hashlib.sha1(str(random.random()).encode('ascii')).hexdigest()[:5]
-    print(salt)
     email_salt = email_address
-    print(email_salt)
     return str(hashlib.sha1(str(salt + email_salt).encode('ascii')).hexdigest())
 
 
@@ -96,7 +95,7 @@ def setup_confirmation(person):
                     'http://' + str(settings.CURRENT_HOST) + '/confirmation?token=' + confirmation_token +
                     '&id=' + str(person.id) + '&type=' + str(person_type))
     msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
-    msg.attach_alternative(render_to_string('email/confirmation.html', {
+    msg.attach_alternative(render_to_string('email/basic_email.html', {
         'message': text_content
     }), "text/html")
     msg.send()
@@ -127,6 +126,7 @@ def new_mentee(request):
         education_form = MenteeEducationFormSet()
         preference_form = MenteePreferenceFormSet()
 
+    messages.error(request, 'There were errors in your submission. Please correct them and submit again.')
     return render(request, 'new_mentee.html', {
         'form': mentee_form,
         'contact_form': contact_form,

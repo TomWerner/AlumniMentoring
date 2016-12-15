@@ -1,11 +1,14 @@
 import csv
 import datetime
 
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.mail import EmailMultiAlternatives
 from django.db.models import Q
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template.loader import render_to_string
+from django.conf import settings
 
 from mentoring.models import Mentor, Mentee, MentorMenteePairs
 
@@ -263,3 +266,52 @@ def end_pairing(request):
         pair.end_date = datetime.date.today()
         pair.save()
         return redirect('/honorsAdmin/pairs', request=request)
+
+
+def invitations(request):
+    return render(request, 'admin/honors_admin_invite.html')
+
+
+def build_invite_message(base_url, name, role, personal_message):
+    message = ''
+    if personal_message:
+        message += personal_message + "\n\n\n\n"
+    message += ('Dear %s,\nOn behalf of the Iowa Honors Mentoring program, we would '
+                'like to extend you an invitation to become a %s!\n\nTo apply, please go to '
+                'http://%s/new%s\n\nThank you!') % (name, role, base_url, role)
+    return message
+
+
+def preview_invite(request):
+    personal_message = request.GET.get('personal_message', None)
+    role = request.GET.get('role', '')
+    name = request.GET.get('name', '')
+    email = request.GET.get('email_address', '')
+
+    message = build_invite_message(settings.CURRENT_HOST, name, role, personal_message)
+    message = 'To: ' + email + '\nSubject: Iowa Honors Mentoring Invitation\n\n' + message
+
+    return JsonResponse({
+        'title': "Invitation Preview",
+        'html': render_to_string('email/basic_email.html', {'message': message})
+    })
+
+
+def send_invite(request):
+    personal_message = request.GET.get('personal_message', None)
+    role = request.GET.get('role', '')
+    name = request.GET.get('name', '')
+    email = request.GET.get('email_address', '')
+
+    message = build_invite_message(settings.CURRENT_HOST, name, role, personal_message)
+
+    from_email = 'Iowa Honors Mentoring <%s>' % settings.EMAIL_HOST_USER
+    to = email
+    msg = EmailMultiAlternatives('Iowa Honors Mentoring Invitation', message, from_email, [to])
+    msg.attach_alternative(render_to_string('email/basic_email.html', {
+        'message': message
+    }), "text/html")
+    msg.send()
+
+    messages.success(request, 'Invitation Sent!')
+    return redirect('/honorsAdmin', request=request)
