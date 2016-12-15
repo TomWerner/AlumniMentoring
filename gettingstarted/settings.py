@@ -151,7 +151,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 
-ADMINS = ['tomwer3@gmail.com']
+ADMINS = [('Tom', 'tomwer3@gmail.com')]
 
 try:
     from .local_settings import *
