@@ -51,6 +51,8 @@ def new_mentor(request):
             setup_confirmation(mentor)
             mentor.save()
             return redirect('/thankyoumentor?confirmation_pending=1', request=request)
+        else:
+            messages.error(request, 'There were errors in your submission. Please correct them and submit again.')
     else:
         mentor_form = MentorForm()
         contact_form = MentorContactFormSet()
@@ -58,7 +60,6 @@ def new_mentor(request):
         employment_form = MentorEmploymentFormSet()
         preference_form = MentorPreferenceFormSet()
 
-    messages.error(request, 'There were errors in your submission. Please correct them and submit again.')
     return render(request, 'new_mentor.html', {
         'form': mentor_form,
         'contact_form': contact_form,
@@ -120,13 +121,14 @@ def new_mentee(request):
             setup_confirmation(mentee)
             mentee.save()
             return redirect('/thankyoumentee?confirmation_pending=1', request=request)
+        else:
+            messages.error(request, 'There were errors in your submission. Please correct them and submit again.')
     else:
         mentee_form = MenteeForm()
         contact_form = MenteeContactFormSet()
         education_form = MenteeEducationFormSet()
         preference_form = MenteePreferenceFormSet()
 
-    messages.error(request, 'There were errors in your submission. Please correct them and submit again.')
     return render(request, 'new_mentee.html', {
         'form': mentee_form,
         'contact_form': contact_form,
