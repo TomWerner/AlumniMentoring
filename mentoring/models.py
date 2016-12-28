@@ -244,8 +244,9 @@ class MenteeEducation(models.Model):
     graduation_year = models.DateField()
 
     def display_string(self):
+        grad_year = str(self.graduation_year.strftime("%B %Y")) if self.graduation_year else 'Not Provided'
         return self.school + \
-               " (" + str(self.graduation_year.strftime("%B %Y")) + ")\n" + \
+               " (" + grad_year + ")\n" + \
                "Major(s): " + ", ".join(x for x in [self.major1, self.major2] if x is not None) + "\n" + \
                "Minor(s): " + ", ".join(x for x in [self.minor1, self.minor2] if x is not None) + "\n"
 
