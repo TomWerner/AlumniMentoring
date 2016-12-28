@@ -228,8 +228,9 @@ class MentorEducation(models.Model):
     graduation_year = models.DateField(null=True, blank=True)
 
     def display_string(self):
+        grad_year = str(self.graduation_year.strftime("%B %Y")) if self.graduation_year else 'Year Unknown'
         return self.school + \
-               " (" + self.get_degree_display() + ", " + str(self.graduation_year.strftime("%B %Y")) + ")\n" + \
+               " (" + self.get_degree_display() + ", " + grad_year + ")\n" + \
                "Major(s): " + ", ".join(x for x in [self.major1, self.major2] if x is not None) + "\n" + \
                "Minor(s): " + ", ".join(x for x in [self.minor1, self.minor2] if x is not None) + "\n"
 
