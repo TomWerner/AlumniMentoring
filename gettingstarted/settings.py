@@ -156,7 +156,6 @@ ADMINS = [('Tom', 'tomwer3@gmail.com')]
 try:
     from .local_settings import *
 except ImportError:
-    pass
     # Production settings
     EMAIL_HOST_PASSWORD = os.environ.get('GMAIL_PASSWORD', None)
     EMAIL_HOST_USER = os.environ.get('GMAIL_USERNAME', None)
