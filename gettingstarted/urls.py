@@ -36,6 +36,7 @@ urlpatterns = [
     url(r'^(?i)honorsAdmin/mentee/([0-9]+)/getallmatcheslist', honors_admin.mentee_get_all_matches_list),
     url(r'^(?i)honorsAdmin/createPairing', honors_admin.create_pairing),
     url(r'^(?i)honorsAdmin/endPairing', honors_admin.end_pairing),
+    url(r'^(?i)honorsAdmin/feedbacks/([0-9]+)/view/', honors_admin.pairing_feedback),
     url(r'^(?i)honorsAdmin/pairs/$', honors_admin.pairings),
     url(r'^(?i)honorsAdmin/export/$', honors_admin.export),
     url(r'^(?i)honorsAdmin/invite/$', honors_admin.invitations),
@@ -55,4 +56,5 @@ urlpatterns = [
     url(r'^(?i)newmentee/', views.new_mentee),
 
     url(r'^(?i)confirmation/', views.confirm_account),
+    url(r'^(?i)feedback/', views.pairing_feedback),
 ]  # + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

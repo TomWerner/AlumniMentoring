@@ -44,4 +44,11 @@ $(document).ready(function () {
         navigate(-1);
     });
     navigate(0);
+    console.log()
+    if ($(window).height() < $('.affix').find('li').height() + 300) {
+        var card = $('.affix').find('li').find('.card');
+        card.height($(window).height() - 222);
+        card.css('overflow-y', 'scroll');
+        // $('.affix').find('li').height($(window).height() - 300);
+    }
 });

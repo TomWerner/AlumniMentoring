@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container">
+        <div class="card">
+            <h2>Pairing Feedback</h2>
+            <form method="post" action="/feedback/" id="invite_form">
+                {% csrf_token %}
+                <input type="hidden" value="{{ id }}" name="id">
+                <input type="hidden" value="{{ token }}" name="token">
+                <div class="row">
+                    <div class="form-group col-md-12">
+                        <label for="went_well">What went well?</label>
+                        <textarea id="went_well" rows="5" class="form-control" name="went_well"></textarea>
+                    </div>
+                    <div class="form-group col-md-12">
+                        <label for="been_better">What could have been better?</label>
+                        <textarea id="been_better" rows="5" class="form-control" name="been_better"></textarea>
+                    </div>
+                    <div class="form-group col-md-12">
+                        <label for="other">Any other comment?</label>
+                        <textarea id="other" rows="5" class="form-control" name="other"></textarea>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-2">
+                        <input type="submit" value="Submit" class="btn btn-primary">
+                    </div>
+                </div>
+            </form>
+            <p>Thank you!</p>
+        </div>
+    </div>
+{% endblock %}

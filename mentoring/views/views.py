@@ -1,6 +1,4 @@
 import datetime
-import hashlib
-import random
 
 from django.conf import settings
 from django.contrib import messages
@@ -9,6 +7,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 
 from mentoring.forms import *
+from mentoring.models import Feedback
+from mentoring.util import generate_confirmation_token
 
 
 def home(request):
@@ -67,12 +67,6 @@ def new_mentor(request):
         'employment_form': employment_form,
         'preference_form': preference_form
     })
-
-
-def generate_confirmation_token(email_address):
-    salt = hashlib.sha1(str(random.random()).encode('ascii')).hexdigest()[:5]
-    email_salt = email_address
-    return str(hashlib.sha1(str(salt + email_salt).encode('ascii')).hexdigest())
 
 
 def setup_confirmation(person):
@@ -155,3 +149,30 @@ def confirm_account(request):
         return redirect('/thankyou' + person_type, request=request)
     else:
         return redirect('/', request=request)
+
+
+def pairing_feedback(request):
+    if request.method == 'GET':
+        token = request.GET.get('token', None)
+        id = request.GET.get('id', None)  # The feedback id
+
+        if token and id:
+            feedback = get_object_or_404(Feedback, pk=id, token=token)
+            return render(request, 'feedback_form.html', {'id': feedback.id, 'token': feedback.token})
+        else:
+            return render(request, 'general_feedback.html')
+    else:
+        went_well = request.POST['went_well']
+        been_better= request.POST['been_better']
+        other = request.POST['other']
+        id = request.POST['id']
+        token = request.POST['token']
+
+        feedback = get_object_or_404(Feedback, pk=id, token=token)
+        feedback.went_well = went_well
+        feedback.went_poorly = been_better
+        feedback.other = other
+        feedback.save()
+
+        return redirect('/')
+

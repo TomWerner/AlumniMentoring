@@ -134,3 +134,41 @@ class MenteeAdmin(admin.ModelAdmin):
         MentorMenteePairInline,
     ]
 
+
+@admin.register(Feedback)
+class FeedbackAdmin(admin.ModelAdmin):
+    fields = (
+        'pairing',
+        'token',
+        'giver',
+        'went_well',
+        'went_poorly',
+        'other',
+    )
+    list_display = fields
+
+
+class FeedbackInline(admin.TabularInline):
+    model = Feedback
+    extra = 0
+    fields = (
+        'giver',
+        'went_well',
+        'went_poorly',
+        'other'
+    )
+
+
+@admin.register(MentorMenteePairs)
+class MentorMenteePairsAdmin(admin.ModelAdmin):
+    fields = (
+        'mentor',
+        'mentee',
+        'start_date',
+        'end_date'
+    )
+    list_display = fields
+    inlines = [
+        FeedbackInline
+    ]
+

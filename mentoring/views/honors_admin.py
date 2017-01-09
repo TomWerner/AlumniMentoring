@@ -10,7 +10,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.template.loader import render_to_string
 from django.conf import settings
 
-from mentoring.models import Mentor, Mentee, MentorMenteePairs
+from mentoring.models import Mentor, Mentee, MentorMenteePairs, Feedback
+from mentoring.views.views import generate_confirmation_token
 
 
 @login_required
@@ -59,12 +60,20 @@ def home(request):
 @login_required
 def pairings(request):
     pairings = MentorMenteePairs.objects.all()
-    pairings = sorted(pairings, key=lambda x: x.is_active(), reverse=True)
+    pairings = sorted(pairings, key=lambda x: (x.is_active(), x.end_date, x.start_date, x.id), reverse=True)
 
     return render(request, 'admin/honors_admin_pairings.html', {
         'pairings': pairings
     })
 
+
+@login_required
+def pairing_feedback(request, pairing_id):
+    pairing = get_object_or_404(MentorMenteePairs, pk=pairing_id)
+    return JsonResponse({
+        'title': 'Feedback',
+        'html': render_to_string('partials/feedback_view.html', {'feedbacks': list(pairing.feedback_set.all())})
+    })
 
 @login_required
 def mentors(request):
@@ -254,6 +263,21 @@ def create_pairing(request):
     return redirect('/honorsAdmin/mentee/0/getallmatches', request=request)
 
 
+def send_feedback_request(feedback):
+    from_email = 'Iowa Honors Mentoring <%s>' % settings.EMAIL_HOST_USER
+    to = str(feedback.get_email_recipient())
+    survey_link = "http://%s/feedback?id=%s&token=%s" % (settings.CURRENT_HOST, feedback.id, feedback.token)
+    message = ("Hello!\n\nOn behalf of Honors, thank you for participating in the mentoring program! "
+               "In order to continue to improve our program and pairing criteria, we would like to ask you for "
+               "some brief feedback about your pairing!\n\n"
+               "Survey link: " + survey_link + "\n\nThank you!")
+    msg = EmailMultiAlternatives('Iowa Honors Mentoring Feedback Request', message, from_email, [to])
+    msg.attach_alternative(render_to_string('email/basic_email.html', {
+        'message': message
+    }), "text/html")
+    msg.send()
+
+
 @login_required
 def end_pairing(request):
     if 'mentee_id' not in request.GET or 'mentor_id' not in request.GET:
@@ -265,6 +289,11 @@ def end_pairing(request):
     else:
         pair.end_date = datetime.date.today()
         pair.save()
+
+        send_feedback_request(Feedback.create_feedback(pair, mentee=False))
+        send_feedback_request(Feedback.create_feedback(pair, mentee=True))
+        messages.success(request, "Feedback requests sent!")
+
         return redirect('/honorsAdmin/pairs', request=request)
 
 

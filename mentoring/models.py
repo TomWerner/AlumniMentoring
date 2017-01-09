@@ -3,7 +3,10 @@ import datetime
 from django.contrib.auth.models import User
 from django.db import models
 
+from mentoring.util import generate_confirmation_token
+
 genders = (('m', 'Male'), ('f', 'Female'))
+feedback_givers = (('1', 'Mentor'), ('2', 'Mentee'))
 degree_options = (('ba', 'Bachelor of Arts'),
                   ('bs', 'Bachelor of Sciences'),
                   ('m', 'Masters'),
@@ -285,7 +288,6 @@ class MentorMenteePairs(models.Model):
     mentee = models.ForeignKey(Mentee)
     start_date = models.DateField()
     end_date = models.DateField(null=True, blank=True)
-    comments = models.TextField(null=True, blank=True)
 
     def is_active(self):
         return self.end_date is None or self.end_date > datetime.date.today()
@@ -293,6 +295,39 @@ class MentorMenteePairs(models.Model):
     def __str__(self):
         return str(self.mentor) + " and " + str(self.mentee) + " (" + str(self.start_date) + " to " + str(
             self.end_date) + ")"
+
+
+class Feedback(models.Model):
+    pairing = models.ForeignKey(MentorMenteePairs, on_delete=models.CASCADE)
+    token = models.CharField(max_length=50, null=True, blank=True)
+    giver = models.CharField(choices=feedback_givers, max_length=1)
+
+    went_well = models.TextField(max_length=1000, null=True, blank=True)
+    went_poorly = models.TextField(max_length=1000, null=True, blank=True)
+    other = models.TextField(max_length=1000, null=True, blank=True)
+
+    def get_email_recipient(self):
+        if self.giver == '1':
+            return self.pairing.mentor.primary_email()
+        else:
+            return self.pairing.mentee.primary_email()
+
+    def giver_name(self):
+        if self.giver == '1':
+            return self.pairing.mentor.full_name()
+        else:
+            return self.pairing.mentee.full_name()
+
+    @staticmethod
+    def create_feedback(mentor_mentee_pair, mentee=True):
+        if mentee:
+            mentee_token = generate_confirmation_token(mentor_mentee_pair.mentee.primary_email())
+            result = Feedback(pairing_id=mentor_mentee_pair.id, token=mentee_token, giver='2')
+        else:
+            mentor_token = generate_confirmation_token(mentor_mentee_pair.mentor.primary_email())
+            result = Feedback(pairing_id=mentor_mentee_pair.id, token=mentor_token, giver='1')
+        result.save()
+        return result
 
 
 class MenteePreference(models.Model):
@@ -325,7 +360,6 @@ class MenteePreference(models.Model):
             if my_choice and my_choice in their_choices:
                 score += int(100 / (i + 1))   # 100 for first choice, 50 for seocnd, 33 for third
         return score
-
 
 
 class MentorPreference(models.Model):

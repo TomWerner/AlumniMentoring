@@ -13,6 +13,7 @@
                     <th>Active</th>
                     <th>Start Date</th>
                     <th>End Date</th>
+                    <th>Feedback</th>
                     <th></th>
                 </tr>
                 </thead>
@@ -29,6 +30,10 @@
                         <td class="vert-center-td">{{ pairing.is_active }}</td>
                         <td class="vert-center-td">{{ pairing.start_date }}</td>
                         <td class="vert-center-td">{{ pairing.end_date }}</td>
+                        <td class="vert-center-td">
+                            <a href="/honorsAdmin/feedbacks/{{ pairing.id }}/view/"
+                               class="popup">View</a>
+                        </td>
                         <td>
                             {% if pairing.is_active %}
                                 <a class="btn btn-danger"

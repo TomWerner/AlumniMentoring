@@ -1,0 +1,19 @@
+<div style="padding:15px">
+    <h4>Went Well</h4>
+    {% for feedback in feedbacks %}
+        <b>{{ feedback.giver_name }}:</b>
+        <div>{{ feedback.went_well|linebreaksbr }}</div>
+    {% endfor %}
+
+    <h4>Could have been better</h4>
+    {% for feedback in feedbacks %}
+        <b>{{ feedback.giver_name }}:</b>
+        <div>{{ feedback.went_poorly|linebreaksbr }}</div>
+    {% endfor %}
+
+    <h4>Other</h4>
+    {% for feedback in feedbacks %}
+        <b>{{ feedback.giver_name }}:</b>
+        <div>{{ feedback.other|linebreaksbr }}</div>
+    {% endfor %}
+</div>
