@@ -296,6 +296,11 @@ class MentorMenteePairs(models.Model):
         return str(self.mentor) + " and " + str(self.mentee) + " (" + str(self.start_date) + " to " + str(
             self.end_date) + ")"
 
+    def has_no_filled_out_feedback(self):
+        return (self.feedback_set.count() == 0 and not self.is_active()) or \
+               (self.feedback_set.count() > 0 and
+                len([feedback for feedback in self.feedback_set.all() if feedback.filled_out()]) == 0)
+
 
 class Feedback(models.Model):
     pairing = models.ForeignKey(MentorMenteePairs, on_delete=models.CASCADE)
@@ -305,6 +310,9 @@ class Feedback(models.Model):
     went_well = models.TextField(max_length=1000, null=True, blank=True)
     went_poorly = models.TextField(max_length=1000, null=True, blank=True)
     other = models.TextField(max_length=1000, null=True, blank=True)
+
+    def giver_name_with_role(self):
+        return self.giver_name() + " (" + self.get_giver_display() + ")"
 
     def get_email_recipient(self):
         if self.giver == '1':
@@ -317,6 +325,9 @@ class Feedback(models.Model):
             return self.pairing.mentor.full_name()
         else:
             return self.pairing.mentee.full_name()
+
+    def filled_out(self):
+        return self.went_well or self.went_poorly or self.other
 
     @staticmethod
     def create_feedback(mentor_mentee_pair, mentee=True):

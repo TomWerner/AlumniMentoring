@@ -344,3 +344,17 @@ def send_invite(request):
 
     messages.success(request, 'Invitation Sent!')
     return redirect('/honorsAdmin', request=request)
+
+
+def mentee_detail_page(request, person_id):
+    person = get_object_or_404(Mentee, pk=person_id)
+    pairings = person.mentormenteepairs_set.all()
+    pairings = sorted(pairings, key=lambda x: (x.is_active(), x.end_date, x.start_date, x.id), reverse=True)
+    return render(request, 'admin/person_detail.html', {'person': person, 'pairings': pairings})
+
+
+def mentor_detail_page(request, person_id):
+    person = get_object_or_404(Mentor, pk=person_id)
+    pairings = person.mentormenteepairs_set.all()
+    pairings = sorted(pairings, key=lambda x: (x.is_active(), x.end_date, x.start_date, x.id), reverse=True)
+    return render(request, 'admin/person_detail.html', {'person': person, 'pairings': pairings})

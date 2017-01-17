@@ -48,7 +48,7 @@ $(document).ready(function () {
     if ($(window).height() < $('.affix').find('li').height() + 300) {
         var card = $('.affix').find('li').find('.card');
         card.height($(window).height() - 222);
-        card.css('overflow-y', 'scroll');
+        card.css('overflow-y', 'auto');
         // $('.affix').find('li').height($(window).height() - 300);
     }
 });

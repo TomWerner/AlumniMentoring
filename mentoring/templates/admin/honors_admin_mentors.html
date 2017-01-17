@@ -18,7 +18,7 @@
                 </thead>
                 {% for mentor in mentors %}
                     <tr>
-                        <td><a href="/honorsAdmin/mentor/{{ mentor.id }}/view/" class="popup">{{ mentor.full_name}}</a></td>
+                        <td><a href="/honorsAdmin/mentor/{{ mentor.id }}/details/">{{ mentor.full_name}}</a></td>
                         <td>{{ mentor.mentorcontactinformation.primary_email }}</td>
                         <td>{{ mentor.get_gender_display }}</td>
                         <td>{{ mentor.active }}</td>

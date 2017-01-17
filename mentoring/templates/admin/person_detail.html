@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block head %}
+    {% load staticfiles %}
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="affix" style="top: 0; bottom: 0; overflow-x: auto; margin-top: 67px">
+                    <div class="card">
+                        <h2 style="text-align: center">{{ person.full_name }}</h2>
+                    </div>
+
+                    <div class="carouselbox">
+                        <div class="card">
+                            <h4>Email</h4>
+                            <div>{{ person.email|linebreaks }}</div>
+
+                            <h4>Phone</h4>
+                            <div>{{ person.phone_number }}</div>
+
+                            <h4>Address</h4>
+                            <div>{{ person.mailing_address|linebreaks }}</div>
+
+                            <h4>Web Contacts</h4>
+                            <div>{{ person.web_contacts|linebreaks }}</div>
+
+                            <h4>Education</h4>
+                            <div>{{ person.education|linebreaks }}</div>
+
+                            <h4>Work</h4>
+                            <div>{{ person.employment|linebreaks }}</div>
+
+                            <h4>Preferences</h4>
+                            <div>{{ person.preferences|linebreaks }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-offset-4 col-md-8">
+                <div id="pairing_list">
+                    {% for pairing in pairings %}
+                        <div class="card">
+                            {% if pairing.is_active %}
+                                <h3>{{ pairing.mentor.full_name }} is mentoring {{ pairing.mentee.full_name }}
+                                    since {{ pairing.start_date }}</h3>
+                            {% else %}
+                                <h3>{{ pairing.mentor.full_name }} mentored {{ pairing.mentee.full_name }}
+                                    from {{ pairing.start_date }} to {{ pairing.end_date }}</h3>
+                            {% endif %}
+                            {% if pairing.has_no_filled_out_feedback %}
+                                <h4>No Feedback</h4>
+                            {% endif %}
+                            {% for feedback in pairing.feedback_set.all %}
+                                {% if feedback.filled_out %}
+                                    <h4>{{ feedback.giver_name_with_role }}</h4>
+                                    <b>Went Well</b>
+                                    <p>{{ feedback.went_well }}</p>
+
+                                    <b>Could have gone better</b>
+                                    <p>{{ feedback.went_poorly }}</p>
+
+                                    <b>Other</b>
+                                    <p>{{ feedback.other }}</p>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -19,7 +19,7 @@
                 {% for mentee in mentees %}
                     <tr>
 
-                        <td><a href="/honorsAdmin/mentee/{{ mentee.id }}/view/" class="popup">{{ mentee.full_name }}</a></td>
+                        <td><a href="/honorsAdmin/mentee/{{ mentee.id }}/details/">{{ mentee.full_name }}</a></td>
                         <td>{{ mentee.menteecontactinformation.primary_email }}</td>
                         <td>{{ mentee.get_gender_display }}</td>
                         <td>{{ mentee.active }}</td>

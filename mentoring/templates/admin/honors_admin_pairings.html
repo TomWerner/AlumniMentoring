@@ -20,12 +20,14 @@
                 {% for pairing in pairings %}
                     <tr>
                         <td class="vert-center-td">
-                            <a href="/honorsAdmin/mentor/{{ pairing.mentor_id }}/view/"
-                               class="popup">{{ pairing.mentor.full_name }}</a>
+                            <a href="/honorsAdmin/mentor/{{ pairing.mentor_id }}/details/">
+                                {{ pairing.mentor.full_name }}
+                            </a>
                         </td>
                         <td class="vert-center-td">
-                            <a href="/honorsAdmin/mentee/{{ pairing.mentee_id }}/view/"
-                               class="popup">{{ pairing.mentee.full_name }}</a>
+                            <a href="/honorsAdmin/mentee/{{ pairing.mentee_id }}/details/">
+                                {{ pairing.mentee.full_name }}
+                            </a>
                         </td>
                         <td class="vert-center-td">{{ pairing.is_active }}</td>
                         <td class="vert-center-td">{{ pairing.start_date }}</td>
