@@ -1,17 +1,16 @@
 import csv
 import datetime
 
+import xlwt
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.mail import EmailMultiAlternatives
-from django.db.models import Q
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template.loader import render_to_string
-from django.conf import settings
 
 from mentoring.models import Mentor, Mentee, MentorMenteePairs, Feedback
-from mentoring.views.views import generate_confirmation_token
 
 
 @login_required
@@ -91,55 +90,126 @@ def mentees(request):
     })
 
 
+def write_mentor_data(wb, people, people_class, person_type):
+    # The main sheet with contact information
+    main_sheet_name = person_type + 's'
+    ws = wb.add_sheet(main_sheet_name)  # type: xlwt.Worksheet
+
+    ws.write(0, 0, 'First Name')
+    ws.write(0, 1, 'Last Name')
+    ws.write(0, 2, 'Gender')
+    ws.write(0, 3, 'Approved')
+    ws.write(0, 4, 'Active')
+    ws.write(0, 5, 'Primary Phone')
+    ws.write(0, 6, 'Secondary Phone')
+    ws.write(0, 7, 'Primary Email')
+    ws.write(0, 8, 'Secondary Email')
+    ws.write(0, 9, 'Linkedin Url')
+    ws.write(0, 10, 'FacebookUrl')
+    ws.write(0, 11, 'Personal Url')
+    ws.write(0, 12, 'Street Address')
+    ws.write(0, 13, 'City')
+    ws.write(0, 14, 'State')
+
+    for row_num, person in enumerate(people):
+        ws.write(row_num + 1, 0, person.first_name)
+        ws.write(row_num + 1, 1, person.last_name)
+        ws.write(row_num + 1, 2, person.get_gender_display())
+        ws.write(row_num + 1, 3, person.approved)
+        ws.write(row_num + 1, 4, person.active)
+        ws.write(row_num + 1, 5, person.get_contact_information().primary_phone)
+        ws.write(row_num + 1, 6, person.get_contact_information().secondary_phone)
+        ws.write(row_num + 1, 7, person.get_contact_information().primary_email)
+        ws.write(row_num + 1, 8, person.get_contact_information().secondary_email)
+        ws.write(row_num + 1, 9, person.get_contact_information().linkedin_url)
+        ws.write(row_num + 1, 10, person.get_contact_information().facebook_url)
+        ws.write(row_num + 1, 11, person.get_contact_information().personal_url)
+        ws.write(row_num + 1, 12, person.get_contact_information().street_address)
+        ws.write(row_num + 1, 13, person.get_contact_information().city)
+        ws.write(row_num + 1, 14, person.get_contact_information().state)
+
+    ws = wb.add_sheet(person_type + ' Education')  # type: xlwt.Worksheet
+    ws.write(0, 0, person_type)
+    for i, header in enumerate(people_class.get_education_headers_as_tuple()):
+        ws.write(0, i+1, header)
+
+    row_num = 1
+    for person_num, person in enumerate(people):
+        for education in person.get_education():
+            ws.write(row_num, 0, person.full_name())
+            for i, data in enumerate(education.data_as_tuple()):
+                ws.write(row_num, i+1, data)
+            row_num += 1
+
+    if person_type == 'Mentor':
+        ws = wb.add_sheet(person_type + ' Employment')  # type: xlwt.Worksheet
+        ws.write(0, 0, 'Mentor')
+        ws.write(0, 1, 'Company')
+        ws.write(0, 2, 'Title')
+        ws.write(0, 3, 'Description')
+
+        row_num = 1
+        for person in people:
+            for employment in person.get_employment():
+                ws.write(row_num, 0, person.full_name())
+                ws.write(row_num, 1, employment.company)
+                ws.write(row_num, 2, employment.title)
+                ws.write(row_num, 3, employment.description)
+                row_num += 1
+
+
+def write_pairing_data(wb, pairs):
+    ws = wb.add_sheet('Pairings')  # type: xlwt.Worksheet
+    ws.write(0, 0, 'Mentor')
+    ws.write(0, 1, 'Mentee')
+    ws.write(0, 2, 'Start Date')
+    ws.write(0, 3, 'End Date')
+    ws.write(0, 4, 'Is Active')
+    ws.write(0, 5, 'Mentor Went Well')
+    ws.write(0, 6, 'Mentor Went Poorly')
+    ws.write(0, 7, 'Mentor Other')
+    ws.write(0, 8, 'Mentee Went Well')
+    ws.write(0, 9, 'Mentee Went Poorly')
+    ws.write(0, 10, 'Mentee Other')
+    for i, pairing in enumerate(pairs):
+        ws.write(i+1, 0, pairing.mentor.full_name())
+        ws.write(i+1, 1, pairing.mentee.full_name())
+        ws.write(i+1, 2, pairing.start_date.strftime('%Y-%m-%d'))
+        if pairing.end_date is not None:
+            ws.write(i+1, 3, pairing.end_date.strftime('%Y-%m-%d'))
+        ws.write(i+1, 4, pairing.is_active())
+
+        feedback = pairing.get_mentor_feedback()
+        if feedback and feedback.filled_out():
+            ws.write(i+1, 5, feedback.went_well)
+            ws.write(i+1, 6, feedback.went_poorly)
+            ws.write(i+1, 7, feedback.other)
+
+        feedback = pairing.get_mentee_feedback()
+        if feedback and feedback.filled_out():
+            ws.write(i + 1, 8, feedback.went_well)
+            ws.write(i + 1, 9, feedback.went_poorly)
+            ws.write(i + 1, 10, feedback.other)
+
+
+
 @login_required
 def export(request):
-    response = HttpResponse(content_type='text/html')
-    response['Content-Disposition'] = 'attachment; filename="mentoring.csv"'
+    response = HttpResponse(content_type='application/ms-excel')
+    filename = 'mentoring_export_' + datetime.date.today().strftime('%Y-%m-%d') + '.xls'
+    response['Content-Disposition'] = 'attachment; filename=' + filename
+    wb = xlwt.Workbook(encoding='utf-8')
 
-    writer = csv.writer(response)
-    writer.writerow(['Mentor/Mentee', 'First Name', 'Last Name', 'Gender', 'Approved', 'Active',
-                     'Primary Phone', 'Secondary Phone', 'Primary Email', 'Secondary email', 'Linkedin url',
-                     'Facebook url', 'Personal url', 'Street Address', 'City', 'State',
-                     ])
-    for mentor in Mentor.objects.filter(mentorcontactinformation__isnull=False):
-        writer.writerow([
-            'Mentor',
-            mentor.first_name,
-            mentor.last_name,
-            mentor.get_gender_display(),
-            mentor.approved,
-            mentor.active,
-            mentor.mentorcontactinformation.primary_phone,
-            mentor.mentorcontactinformation.secondary_phone,
-            mentor.mentorcontactinformation.primary_email,
-            mentor.mentorcontactinformation.secondary_email,
-            mentor.mentorcontactinformation.linkedin_url,
-            mentor.mentorcontactinformation.facebook_url,
-            mentor.mentorcontactinformation.personal_url,
-            mentor.mentorcontactinformation.street_address,
-            mentor.mentorcontactinformation.city,
-            mentor.mentorcontactinformation.state,
-        ])
-    for mentee in Mentee.objects.filter(menteecontactinformation__isnull=False):
-        writer.writerow([
-            'Mentee',
-            mentee.first_name,
-            mentee.last_name,
-            mentee.get_gender_display(),
-            mentee.approved,
-            mentee.active,
-            mentee.menteecontactinformation.primary_phone,
-            mentee.menteecontactinformation.secondary_phone,
-            mentee.menteecontactinformation.primary_email,
-            mentee.menteecontactinformation.secondary_email,
-            mentee.menteecontactinformation.linkedin_url,
-            mentee.menteecontactinformation.facebook_url,
-            mentee.menteecontactinformation.personal_url,
-            mentee.menteecontactinformation.street_address,
-            mentee.menteecontactinformation.city,
-            mentee.menteecontactinformation.state,
-        ])
+    mentors = Mentor.objects.filter(approved=True)
+    mentees = Mentee.objects.filter(approved=True)
+    pairs = MentorMenteePairs.objects.all()
+    pairs = sorted(pairs, key=lambda x: (x.is_active(), x.end_date, x.start_date, x.id), reverse=True)
 
+    write_mentor_data(wb, mentors, Mentor, 'Mentor')
+    write_mentor_data(wb, mentees, Mentee, 'Mentee')
+    write_pairing_data(wb, pairs)
+
+    wb.save(response)
     return response
 
 
@@ -263,6 +333,7 @@ def create_pairing(request):
     return redirect('/honorsAdmin/mentee/0/getallmatches', request=request)
 
 
+@login_required
 def send_feedback_request(feedback):
     from_email = 'Iowa Honors Mentoring <%s>' % settings.EMAIL_HOST_USER
     to = str(feedback.get_email_recipient())
@@ -297,6 +368,7 @@ def end_pairing(request):
         return redirect('/honorsAdmin/pairs', request=request)
 
 
+@login_required
 def invitations(request):
     return render(request, 'admin/honors_admin_invite.html')
 
@@ -311,6 +383,7 @@ def build_invite_message(base_url, name, role, personal_message):
     return message
 
 
+@login_required
 def preview_invite(request):
     personal_message = request.GET.get('personal_message', None)
     role = request.GET.get('role', '')
@@ -326,6 +399,7 @@ def preview_invite(request):
     })
 
 
+@login_required
 def send_invite(request):
     personal_message = request.POST.get('personal_message', None)
     role = request.POST.get('role', '')
@@ -346,6 +420,7 @@ def send_invite(request):
     return redirect('/honorsAdmin', request=request)
 
 
+@login_required
 def mentee_detail_page(request, person_id):
     person = get_object_or_404(Mentee, pk=person_id)
     pairings = person.mentormenteepairs_set.all()
@@ -353,6 +428,7 @@ def mentee_detail_page(request, person_id):
     return render(request, 'admin/person_detail.html', {'person': person, 'pairings': pairings})
 
 
+@login_required
 def mentor_detail_page(request, person_id):
     person = get_object_or_404(Mentor, pk=person_id)
     pairings = person.mentormenteepairs_set.all()

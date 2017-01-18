@@ -53,6 +53,19 @@ class Mentor(models.Model):
     confirmation_token = models.CharField(max_length=50, null=True, blank=True)
     active_until = models.DateTimeField(null=True, blank=True)
 
+    def get_employment(self):
+        return self.mentoremployment_set.all()
+
+    @staticmethod
+    def get_education_headers_as_tuple():
+        return 'School', 'Major 1', 'Major 2', 'Minor 1', 'Minor 2', 'Degree', 'Graduation Year'
+
+    def get_contact_information(self):
+        return self.mentorcontactinformation
+
+    def get_education(self):
+        return self.mentoreducation_set.all()
+
     def primary_email(self):
         return self.mentorcontactinformation.primary_email
 
@@ -94,6 +107,19 @@ class Mentee(models.Model):
     confirmed = models.BooleanField(default=False)
     confirmation_token = models.CharField(max_length=50, null=True, blank=True)
     active_until = models.DateTimeField(null=True, blank=True)
+
+    def get_employment(self):
+        return []
+
+    @staticmethod
+    def get_education_headers_as_tuple():
+        return 'School', 'Major 1', 'Major 2', 'Minor 1', 'Minor 2', 'Graduation Year'
+
+    def get_contact_information(self):
+        return self.menteecontactinformation
+
+    def get_education(self):
+        return self.menteeeducation_set.all()
 
     def full_name(self):
         return self.first_name + " " + self.last_name
@@ -237,6 +263,10 @@ class MentorEducation(models.Model):
                "Major(s): " + ", ".join(x for x in [self.major1, self.major2] if x is not None) + "\n" + \
                "Minor(s): " + ", ".join(x for x in [self.minor1, self.minor2] if x is not None) + "\n"
 
+    def data_as_tuple(self):
+        return self.school, self.major1, self.major2, self.minor1, self.minor2, self.get_degree_display(), \
+               str(self.graduation_year.strftime("%B %Y")) if self.graduation_year else 'Year Unknown'
+
 
 class MenteeEducation(models.Model):
     mentee = models.ForeignKey(Mentee)
@@ -246,6 +276,10 @@ class MenteeEducation(models.Model):
     minor1 = models.CharField(max_length=100, blank=True, null=True)
     minor2 = models.CharField(max_length=100, blank=True, null=True)
     graduation_year = models.DateField()
+
+    def data_as_tuple(self):
+        return self.school, self.major1, self.major2, self.minor1, self.minor2,\
+               str(self.graduation_year.strftime("%B %Y")) if self.graduation_year else 'Not Provided'
 
     def display_string(self):
         grad_year = str(self.graduation_year.strftime("%B %Y")) if self.graduation_year else 'Not Provided'
@@ -282,6 +316,9 @@ class MentorEmployment(models.Model):
     def display_string(self):
         return self.title + " at " + self.company
 
+    def data_as_tuple(self):
+        return self.company, self. title, self.description
+
 
 class MentorMenteePairs(models.Model):
     mentor = models.ForeignKey(Mentor)
@@ -300,6 +337,12 @@ class MentorMenteePairs(models.Model):
         return (self.feedback_set.count() == 0 and not self.is_active()) or \
                (self.feedback_set.count() > 0 and
                 len([feedback for feedback in self.feedback_set.all() if feedback.filled_out()]) == 0)
+
+    def get_mentor_feedback(self):
+        return self.feedback_set.filter(giver='1').first()
+
+    def get_mentee_feedback(self):
+        return self.feedback_set.filter(giver='2').first()
 
 
 class Feedback(models.Model):
@@ -369,7 +412,7 @@ class MenteePreference(models.Model):
 
         for i, my_choice in enumerate(my_choices):
             if my_choice and my_choice in their_choices:
-                score += int(100 / (i + 1))   # 100 for first choice, 50 for seocnd, 33 for third
+                score += int(100 / (i + 1))  # 100 for first choice, 50 for seocnd, 33 for third
         return score
 
 
