@@ -47,7 +47,6 @@ class Mentor(models.Model):
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     gender = models.CharField(max_length=1, choices=genders)
-    active = models.BooleanField(default=True)
     approved = models.BooleanField(default=False)
     confirmed = models.BooleanField(default=False)
     confirmation_token = models.CharField(max_length=50, null=True, blank=True)
@@ -58,7 +57,7 @@ class Mentor(models.Model):
 
     @staticmethod
     def get_education_headers_as_tuple():
-        return 'School', 'Major 1', 'Major 2', 'Minor 1', 'Minor 2', 'Degree', 'Graduation Year'
+        return 'School', 'Major 1', 'Major 2', 'Minor 1', 'Minor 2', 'Degree', 'Graduation Year', 'Is Latest Degree'
 
     def get_contact_information(self):
         return self.mentorcontactinformation
@@ -263,9 +262,14 @@ class MentorEducation(models.Model):
                "Major(s): " + ", ".join(x for x in [self.major1, self.major2] if x is not None) + "\n" + \
                "Minor(s): " + ", ".join(x for x in [self.minor1, self.minor2] if x is not None) + "\n"
 
+    def is_latest_degree(self):
+        educations = self.mentor.mentoreducation_set.all().order_by('graduation_year')
+        return self == list(educations)[-1]
+
     def data_as_tuple(self):
         return self.school, self.major1, self.major2, self.minor1, self.minor2, self.get_degree_display(), \
-               str(self.graduation_year.strftime("%B %Y")) if self.graduation_year else 'Year Unknown'
+               str(self.graduation_year.strftime("%B %Y")) if self.graduation_year else 'Year Unknown', \
+               self.is_latest_degree()
 
 
 class MenteeEducation(models.Model):
