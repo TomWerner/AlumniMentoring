@@ -25,7 +25,10 @@ MentorEducationFormSet = inlineformset_factory(Mentor, MentorEducation,
                                                        'major1',
                                                        'major2',
                                                        'minor1',
-                                                       'minor2',))
+                                                       'minor2',),
+                                               help_texts={
+                                                   'graduation_year': 'Enter the date in a MM/DD/YYYY format'
+                                               })
 
 MentorEmploymentFormSet = inlineformset_factory(Mentor, MentorEmployment,
                                                 fields=('company',
@@ -64,7 +67,10 @@ MenteeEducationFormSet = inlineformset_factory(Mentee, MenteeEducation,
                                                        'major1',
                                                        'major2',
                                                        'minor1',
-                                                       'minor2',))
+                                                       'minor2',),
+                                               help_texts={
+                                                   'graduation_year': 'Enter the date in a MM/DD/YYYY format'
+                                               })
 
 MenteePreferenceFormSet = inlineformset_factory(Mentee, MenteePreference,
                                                 fields=('first_choice',

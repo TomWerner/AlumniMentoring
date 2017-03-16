@@ -59,7 +59,7 @@
             <br>
             <br>
             <br>
-            <input type="submit" class="btn btn-primary" value="Submit"/>
+            <input type="submit" class="btn btn-primary" id="submit_btn" value="Submit"/>
         </form>
     </div>
 
@@ -108,7 +108,21 @@
                 if (education_count == 3) {
                     $(this).hide();
                 }
-            })
+            });
+
+            $('#submit_btn').click(function(e) {
+                for (var i = 0; i < education_count; i++) {
+                    var el = $('#id_mentoreducation_set-' + i + '-graduation_year');
+                    var str_val = el.val().toString();
+                    if (str_val.indexOf('/') == -1 && (str_val.length == 2 || str_val.length == 4)) {
+                        var year_val = parseInt(str_val);
+                        if (year_val < 100)
+                            el.val('05/12/19' + year_val.toString());
+                        else if (year_val < 10000)
+                            el.val('05/12/' + year_val.toString());
+                    }
+                }
+            });
         });
     </script>
 

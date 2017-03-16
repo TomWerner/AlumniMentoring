@@ -41,7 +41,7 @@
             <br>
             <br>
             <br>
-            <input type="submit" class="btn btn-primary" value="Submit"/>
+            <input type="submit" class="btn btn-primary" id="submit_btn" value="Submit"/>
         </form>
     </div>
 
@@ -65,6 +65,18 @@
             for (var i = 1; i < educationForms.length; i++)
                 $(educationForms[i]).css('margin-top', '30px').hide();
 
+        });
+
+        $('#submit_btn').click(function(e) {
+            var el = $('#id_menteeeducation_set-0-graduation_year');
+            var str_val = el.val().toString();
+            if (str_val.indexOf('/') == -1 && (str_val.length == 2 || str_val.length == 4)) {
+                var year_val = parseInt(str_val);
+                if (year_val < 100)
+                    el.val('05/12/19' + year_val.toString());
+                else if (year_val < 10000)
+                    el.val('05/12/' + year_val.toString());
+            }
         });
     </script>
 
