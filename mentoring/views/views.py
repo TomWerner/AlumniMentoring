@@ -111,10 +111,14 @@ def new_mentee(request):
             education_form.save()
             preference_form.instance = mentee
             preference_form.save()
-
-            setup_confirmation(mentee)
-            mentee.save()
-            return redirect('/thankyoumentee?confirmation_pending=1', request=request)
+            try:
+                setup_confirmation(mentee)
+                mentee.save()
+                return redirect('/thankyoumentee?confirmation_pending=1', request=request)
+            except:
+                messages.error(request, 'Sorry! We are experiencing temporary server issues and the '
+                                        'administrator has been contacted. '
+                                        'Please try again in 15 minutes.')
         else:
             messages.error(request, 'There were errors in your submission. Please correct them and submit again.')
     else:
