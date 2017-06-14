@@ -9,6 +9,7 @@ admin.autodiscover()
 
 from django.conf import settings
 from django.conf.urls.static import static
+import django.contrib.auth.views
 
 from mentoring.views import views
 from mentoring.views import honors_admin
@@ -47,8 +48,8 @@ urlpatterns = [
 
 
     # Default django stuff
-    url(r'^(?i)accounts/logout/$', 'django.contrib.auth.views.logout'),
-    url(r'^(?i)accounts/login/$', 'django.contrib.auth.views.login', {'template_name': 'admin/login.html'}),
+    url(r'^(?i)accounts/logout/$', django.contrib.auth.views.logout),
+    url(r'^(?i)accounts/login/$', django.contrib.auth.views.login, {'template_name': 'admin/login.html'}),
     url(r'^(?i)accounts/$', RedirectView.as_view(url='/')),
 
     url(r'^(?i)thankyoumentor/', views.thank_you_mentor),
