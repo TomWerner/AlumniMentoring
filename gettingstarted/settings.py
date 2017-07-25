@@ -165,7 +165,7 @@ LOGGING = {
         'file': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': '~/alumni_log.log',
+            'filename': '/home/ubuntu/alumnimentoring/alumni_log.log',
             'formatter': 'verbose'
         },
     },
