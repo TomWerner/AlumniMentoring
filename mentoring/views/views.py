@@ -46,6 +46,7 @@ def check_form(request, forms):
             for error_dict in d:
                 for field_name, message in error_dict.items():
                     error_msg += field_name.replace('_', ' ').capitalize() + ': ' + message[0] + "\n"
+    logger.error(str(forms))
     logger.error(error_msg)
     messages.error(request, error_msg)
 
