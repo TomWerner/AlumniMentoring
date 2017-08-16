@@ -1,10 +1,12 @@
-from django.forms import ModelForm, inlineformset_factory
+from django.forms import ModelForm, inlineformset_factory, modelformset_factory
 
 from mentoring.models import Mentor, MentorContactInformation, MentorEducation, MentorEmployment, \
     MenteeContactInformation, Mentee, MenteeEducation, MenteePreference, MentorPreference
 
 
 class MentorForm(ModelForm):
+    # def __init__(self):
+    #     self.media
     class Meta:
         model = Mentor
         fields = ['first_name', 'last_name', 'gender']
@@ -16,7 +18,7 @@ MentorContactFormSet = inlineformset_factory(Mentor, MentorContactInformation,
                                                  'primary_email', 'secondary_email',
                                                  'linkedin_url', 'facebook_url',
                                                  'personal_url', 'street_address',
-                                                 'city', 'state',))
+                                                 'city', 'state',), extra=1)
 
 MentorEducationFormSet = inlineformset_factory(Mentor, MentorEducation,
                                                fields=('school',
@@ -44,7 +46,7 @@ MentorPreferenceFormSet = inlineformset_factory(Mentor, MentorPreference,
                                                 labels={'first_choice':'Primary Mentoring Goal',
                                                         'second_choice': 'Goal 2',
                                                         'third_choice': 'Goal 3',
-                                                        'preferred_communication': 'Preferred Communication'})
+                                                        'preferred_communication': 'Preferred Communication'}, extra=1)
 
 
 class MenteeForm(ModelForm):
@@ -59,7 +61,7 @@ MenteeContactFormSet = inlineformset_factory(Mentee, MenteeContactInformation,
                                                  'primary_email', 'secondary_email',
                                                  'linkedin_url', 'facebook_url',
                                                  'personal_url', 'street_address',
-                                                 'city', 'state',))
+                                                 'city', 'state',), extra=1)
 
 MenteeEducationFormSet = inlineformset_factory(Mentee, MenteeEducation,
                                                fields=('school',
@@ -70,7 +72,7 @@ MenteeEducationFormSet = inlineformset_factory(Mentee, MenteeEducation,
                                                        'minor2',),
                                                help_texts={
                                                    'graduation_year': 'Enter the date in a YYYY format'
-                                               })
+                                               }, extra=1)
 
 MenteePreferenceFormSet = inlineformset_factory(Mentee, MenteePreference,
                                                 fields=('first_choice',
@@ -80,4 +82,4 @@ MenteePreferenceFormSet = inlineformset_factory(Mentee, MenteePreference,
                                                 labels={'first_choice':'Primary Mentoring Goal',
                                                         'second_choice': 'Goal 2',
                                                         'third_choice': 'Goal 3',
-                                                        'preferred_communication': 'Preferred Communication'})
+                                                        'preferred_communication': 'Preferred Communication'}, extra=1)

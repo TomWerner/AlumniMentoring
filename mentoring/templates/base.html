@@ -65,7 +65,7 @@
 <div style="padding-top: 50px"></div>
 {% if messages %}
     {% for message in messages %}
-        <div {% if message.tags %} class="alert top-message alert-{{ message.tags }} {% if message.tags == 'error' %}alert-danger{% endif %}"{% endif %}>{{ message }}</div>
+        <div {% if message.tags %} class="alert top-message alert-{{ message.tags }} {% if message.tags == 'error' %}alert-danger{% endif %}"{% endif %}>{{ message|linebreaks }}</div>
     {% endfor %}
 {% endif %}
 

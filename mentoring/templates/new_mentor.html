@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 
+
 {% block content %}
     <div class="container">
         <h2>Mentor Sign-up</h2>
@@ -8,6 +9,9 @@
             Your submission will be recorded and vetted by honors
             staff. You will be contacted through your primary email when we have a match.
         </h5>
+
+
+
         <br>
 
         {% load crispy_forms_tags %}
@@ -80,15 +84,23 @@
             var education_count = 1;
             var educationForms = $('#education-info').find('.multiField');
             educationForms.addClass('col-md-12').css('padding', '0');
-            for (var i = 1; i < educationForms.length; i++)
-                $(educationForms[i]).css('margin-top', '30px').hide();
+            for (var i = 1; i < educationForms.length; i++) {
+                if (!$('#id_mentoreducation_set-' + i + '-school').val())
+                    $(educationForms[i]).css('margin-top', '30px').hide();
+                else
+                    education_count++;
+            }
 
             $('#employment-info').find('>> .form-group').addClass('col-md-4');
             var employment_count = 1;
             var employmentForms = $('#employment-info').find('.multiField');
             employmentForms.addClass('col-md-12').css('padding', '0');
-            for (var i = 1; i < employmentForms.length; i++)
-                $(employmentForms[i]).css('margin-top', '30px').hide();
+            for (var i = 1; i < employmentForms.length; i++) {
+                if (!$('#id_mentoremployment_set-' + i + '-company').val())
+                    $(employmentForms[i]).css('margin-top', '30px').hide();
+                else
+                    employment_count++;
+            }
 
             $('#add-employer').click(function (e) {
                 e.preventDefault();
@@ -107,7 +119,7 @@
                 }
             });
 
-            $('#submit_btn').click(function(e) {
+            $('#submit_btn').click(function (e) {
                 for (var i = 0; i < education_count; i++) {
                     var el = $('#id_mentoreducation_set-' + i + '-graduation_year');
                     var str_val = el.val().toString();
