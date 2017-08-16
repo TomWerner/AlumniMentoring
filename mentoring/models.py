@@ -5,7 +5,16 @@ from django.db import models
 
 from mentoring.util import generate_confirmation_token
 
-genders = (('m', 'Male'), ('f', 'Female'))
+genders = (
+    ('a', 'Agender'),
+    ('c', 'Cisgender'),
+    ('m', 'Male'),
+    ('n', 'Non-binary'),
+    ('t', 'Transgender'),
+    ('f', 'Female'),
+    ('l', 'Another gender not listed'),
+    ('p', 'Prefer not to answer')
+)
 feedback_givers = (('1', 'Mentor'), ('2', 'Mentee'))
 degree_options = (('ba', 'Bachelor of Arts'),
                   ('bs', 'Bachelor of Sciences'),
