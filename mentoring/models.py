@@ -21,7 +21,9 @@ degree_options = (('ba', 'Bachelor of Arts'),
                   ('m', 'Masters'),
                   ('d', 'Ph.D'),
                   ('pd', 'MD Ph.D'),
-                  ('md', 'MD')
+                  ('md', 'MD'),
+                  ('jd', 'JD'),
+                  ('mp', 'MPhil')
                   )
 mentoring_categories = (
     ('1', 'Choice of Major'),
