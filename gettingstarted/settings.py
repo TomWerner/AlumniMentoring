@@ -161,26 +161,26 @@ LOGGING = {
             'format': '%(levelname)s %(asctime)s %(module)s %(message)s'
         },
     },
-    'handlers': {
-        'file': {
-            'level': 'INFO',
-            'class': 'logging.FileHandler',
-            'filename': '/home/ubuntu/alumnimentoring/alumni_log.log',
-            'formatter': 'verbose'
-        },
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['file'],
-            'level': 'INFO',
-            'propagate': True,
-        },
-        'django.request': {
-            'handlers': ['file'],
-            'level': 'ERROR',
-            'propagate': True,
-        },
-    },
+    # 'handlers': {
+    #     'file': {
+    #         'level': 'INFO',
+    #         'class': 'logging.FileHandler',
+    #         'filename': '/home/ubuntu/alumnimentoring/alumni_log.log',
+    #         'formatter': 'verbose'
+    #     },
+    # },
+    # 'loggers': {
+    #     'django': {
+    #         'handlers': ['file'],
+    #         'level': 'INFO',
+    #         'propagate': True,
+    #     },
+    #     'django.request': {
+    #         'handlers': ['file'],
+    #         'level': 'ERROR',
+    #         'propagate': True,
+    #     },
+    # },
 }
 
 try:

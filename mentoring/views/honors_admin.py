@@ -325,10 +325,33 @@ def create_pairing(request):
 
     pair = MentorMenteePairs(mentee=mentee, mentor=mentor, start_date=datetime.date.today())
     pair.save()
+
+    # Send an email to both people
+    text = "Hello %s and %s,\n\nWe're happy to inform you that you have been selected " \
+           "as a mentor mentee pair as part of the Iowa Honors Mentoring program. " \
+           "If you need additional help contacting each other, feel free to contact the honors department." \
+           "\n" \
+           "Mentor:\n" \
+           " - %s\n - %s\n\n" \
+           "Mentee:\n" \
+           " - %s\n - %s\n\n" \
+           "Best of luck with the mentorship!\n" \
+           "Iowa Honors Mentoring Program" % (mentor.full_name(), mentee.full_name(),
+                                              mentor.full_name(), mentor.primary_email(),
+                                              mentee.full_name(), mentee.primary_email())
+
+    from_email = 'Iowa Honors Mentoring <%s>' % settings.EMAIL_HOST_USER
+    msg = EmailMultiAlternatives("You've been matched for a mentorship!", text, from_email,
+                                 [mentee.primary_email(), mentor.primary_email()])
+    msg.attach_alternative(render_to_string('email/basic_email.html', {
+        'message': text
+    }), "text/html")
+    msg.send()
+    messages.success(request, 'An email has been sent to the pair!')
+
     return redirect('/honorsAdmin/mentee/0/getallmatches', request=request)
 
 
-@login_required
 def send_feedback_request(feedback):
     from_email = 'Iowa Honors Mentoring <%s>' % settings.EMAIL_HOST_USER
     to = str(feedback.get_email_recipient())
@@ -347,11 +370,11 @@ def send_feedback_request(feedback):
 @login_required
 def end_pairing(request):
     if 'mentee_id' not in request.GET or 'mentor_id' not in request.GET:
-        return HttpResponseRedirect(redirect_to='/honorsAdmin', status=404, request=request)
+        return HttpResponseRedirect(redirect_to='/honorsAdmin', status=404)
     pair = MentorMenteePairs.objects.filter(mentor_id=request.GET['mentor_id'], mentee_id=request.GET['mentee_id'],
                                             end_date__isnull=True).first()
     if pair is None:
-        return HttpResponseRedirect(redirect_to='/honorsAdmin', status=404, request=request)
+        return HttpResponseRedirect(redirect_to='/honorsAdmin', status=404)
     else:
         pair.end_date = datetime.date.today()
         pair.save()
