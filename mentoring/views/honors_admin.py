@@ -316,16 +316,7 @@ def mentee_get_all_matches_list(request, mentee_id):
     })
 
 
-@login_required
-def create_pairing(request):
-    if 'mentee_id' not in request.GET or 'mentor_id' not in request.GET:
-        return HttpResponseRedirect(redirect_to='/honorsAdmin', status=404, request=request)
-    mentor = get_object_or_404(Mentor, pk=request.GET['mentor_id'])
-    mentee = get_object_or_404(Mentee, pk=request.GET['mentee_id'])
-
-    pair = MentorMenteePairs(mentee=mentee, mentor=mentor, start_date=datetime.date.today())
-    pair.save()
-
+def send_paring_email(mentor, mentee):
     # Send an email to both people
     text = "Hello %s and %s,\n\nWe're happy to inform you that you have been selected " \
            "as a mentor mentee pair as part of the Iowa Honors Mentoring program. " \
@@ -347,6 +338,31 @@ def create_pairing(request):
         'message': text
     }), "text/html")
     msg.send()
+
+
+@login_required
+def resend_pairing_email(request):
+    if 'mentee_id' not in request.GET or 'mentor_id' not in request.GET:
+        return HttpResponseRedirect(redirect_to='/honorsAdmin', status=404, request=request)
+    mentor = get_object_or_404(Mentor, pk=request.GET['mentor_id'])
+    mentee = get_object_or_404(Mentee, pk=request.GET['mentee_id'])
+
+    pair = get_object_or_404(MentorMenteePairs, mentee=mentee, mentor=mentor)
+
+    send_paring_email(mentor, mentee)
+    messages.success(request, 'An email has been sent to the pair!')
+
+    return redirect('/honorsAdmin/pairs', request=request)
+
+
+@login_required
+def create_pairing(request):
+    if 'mentee_id' not in request.GET or 'mentor_id' not in request.GET:
+        return HttpResponseRedirect(redirect_to='/honorsAdmin', status=404, request=request)
+    mentor = get_object_or_404(Mentor, pk=request.GET['mentor_id'])
+    mentee = get_object_or_404(Mentee, pk=request.GET['mentee_id'])
+
+    send_paring_email(mentor, mentee)
     messages.success(request, 'An email has been sent to the pair!')
 
     return redirect('/honorsAdmin/mentee/0/getallmatches', request=request)
