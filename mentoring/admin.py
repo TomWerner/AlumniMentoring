@@ -9,7 +9,6 @@ class MentorMenteePairInline(admin.TabularInline):
         'mentee',
         'start_date',
         'end_date',
-        'comments'
     )
 
 
