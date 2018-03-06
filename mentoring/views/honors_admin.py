@@ -362,6 +362,9 @@ def create_pairing(request):
     mentor = get_object_or_404(Mentor, pk=request.GET['mentor_id'])
     mentee = get_object_or_404(Mentee, pk=request.GET['mentee_id'])
 
+    pair = MentorMenteePairs(mentee=mentee, mentor=mentor, start_date=datetime.date.today())
+    pair.save()
+
     send_paring_email(mentor, mentee)
     messages.success(request, 'An email has been sent to the pair!')
 
