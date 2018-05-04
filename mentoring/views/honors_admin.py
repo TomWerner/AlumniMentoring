@@ -318,16 +318,22 @@ def mentee_get_all_matches_list(request, mentee_id):
 
 def send_paring_email(mentor, mentee):
     # Send an email to both people
-    text = "Hello %s and %s,\n\nWe're happy to inform you that you have been selected " \
-           "as a mentor mentee pair as part of the Iowa Honors Mentoring program. " \
-           "If you need additional help contacting each other, feel free to contact the honors department." \
-           "\n" \
+    text = "Hello %s and %s,\n\n"\
+           "I'm happy to inform you that you’ve been matched as a mentor/mentee pair as part of the " \
+           "Iowa Honors Mentoring Program. Your contact info is below. " \
+           "Please reach out to one another to start the dialogue.\n\n" \
+           "If you have questions or need help in using the system, feel free to contact " \
+           "the Honors Program (art-spisak@uiowa.edu) ." \
+           "\n\n" \
            "Mentor:\n" \
            " - %s\n - %s\n\n" \
            "Mentee:\n" \
            " - %s\n - %s\n\n" \
-           "Best of luck with the mentorship!\n" \
-           "Iowa Honors Mentoring Program" % (mentor.full_name(), mentee.full_name(),
+           "All success with the mentorship,\n\n" \
+           "Art L. Spisak\n"\
+           "Director, Honors Program\n"\
+           "University of Iowa\n"\
+           "art-spisak@uiowa.edu" % (mentor.full_name(), mentee.full_name(),
                                               mentor.full_name(), mentor.primary_email(),
                                               mentee.full_name(), mentee.primary_email())
 
