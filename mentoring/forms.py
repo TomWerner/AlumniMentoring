@@ -9,7 +9,7 @@ class MentorForm(ModelForm):
     #     self.media
     class Meta:
         model = Mentor
-        fields = ['first_name', 'last_name', 'gender']
+        fields = ['first_name', 'last_name', 'new_gender']
 
 
 MentorContactFormSet = inlineformset_factory(Mentor, MentorContactInformation,
@@ -52,7 +52,7 @@ MentorPreferenceFormSet = inlineformset_factory(Mentor, MentorPreference,
 class MenteeForm(ModelForm):
     class Meta:
         model = Mentee
-        fields = ['first_name', 'last_name', 'gender']
+        fields = ['first_name', 'last_name', 'new_gender']
 
 
 MenteeContactFormSet = inlineformset_factory(Mentee, MenteeContactInformation,
