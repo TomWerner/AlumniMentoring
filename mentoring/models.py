@@ -58,6 +58,7 @@ class Mentor(models.Model):
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     gender = models.CharField(max_length=1, choices=genders)
+    new_gender = models.CharField(max_length=50, null=True)
     approved = models.BooleanField(default=False)
     confirmed = models.BooleanField(default=False)
     confirmation_token = models.CharField(max_length=50, null=True, blank=True)
