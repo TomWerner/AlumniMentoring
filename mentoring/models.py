@@ -113,6 +113,7 @@ class Mentee(models.Model):
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     gender = models.CharField(max_length=1, choices=genders)
+    new_gender = models.CharField(max_length=50, null=True)
     active = models.BooleanField(default=True)
     approved = models.BooleanField(default=False)
     confirmed = models.BooleanField(default=False)
