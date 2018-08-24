@@ -20,7 +20,7 @@
 
                         <td><a href="/honorsAdmin/mentee/{{ mentee.id }}/details/">{{ mentee.full_name }}</a></td>
                         <td>{{ mentee.menteecontactinformation.primary_email }}</td>
-                        <td>{{ mentee.get_gender_display }}</td>
+                        <td>{{ mentee.gender }}</td>
                         <td>{{ mentee.approved }}</td>
                         <td><a href="/admin/mentoring/mentee/{{ mentee.id }}/change/">Edit</a></td>
                     </tr>

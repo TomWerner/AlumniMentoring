@@ -3,12 +3,12 @@ from django.db import migrations, transaction
 def move_gender(apps, schema_editor):
     Mentor = apps.get_model('mentoring', 'Mentor')
     for row in Mentor.objects.all():
-        row.new_gender = row.get_gender_display()
+        row.new_gender = row.gender
         row.save()
 
     Mentee = apps.get_model('mentoring', 'Mentee')
     for row in Mentee.objects.all():
-        row.new_gender = row.get_gender_display()
+        row.new_gender = row.gender
         row.save()
 
 class Migration(migrations.Migration):

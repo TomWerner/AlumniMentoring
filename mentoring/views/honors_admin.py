@@ -112,7 +112,7 @@ def write_mentor_data(wb, people, people_class, person_type):
     for row_num, person in enumerate(people):
         ws.write(row_num + 1, 0, person.first_name)
         ws.write(row_num + 1, 1, person.last_name)
-        ws.write(row_num + 1, 2, person.get_gender_display())
+        ws.write(row_num + 1, 2, person.gender)
         ws.write(row_num + 1, 3, person.get_contact_information().primary_phone)
         ws.write(row_num + 1, 4, person.get_contact_information().secondary_phone)
         ws.write(row_num + 1, 5, person.get_contact_information().primary_email)
