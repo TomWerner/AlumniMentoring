@@ -62,12 +62,13 @@ class MentorAdmin(admin.ModelAdmin):
         'first_name',
         'last_name',
         'gender',
+        'new_gender'
         'approved',
         'confirmed',
         'confirmation_token',
         'active_until',
     )
-    list_display = ('first_name', 'last_name', 'approved', 'confirmed')
+    list_display = ('first_name', 'last_name', 'new_gender', 'approved', 'confirmed')
 
     inlines = [
         MentorContactInline,
@@ -117,12 +118,14 @@ class MenteeAdmin(admin.ModelAdmin):
         'first_name',
         'last_name',
         'gender',
+        'new_gender',
         'approved',
         'confirmed',
         'confirmation_token',
         'active_until',
     )
-    list_display = ('first_name', 'last_name', 'approved', 'confirmed')
+    list_display = ('first_name', 'last_name',
+        'new_gender', 'approved', 'confirmed')
 
     inlines = [
         MenteeContactInline,
