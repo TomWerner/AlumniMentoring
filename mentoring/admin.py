@@ -61,7 +61,7 @@ class MentorAdmin(admin.ModelAdmin):
     fields = (
         'first_name',
         'last_name',
-        'gender'
+        'gender',
         'approved',
         'confirmed',
         'confirmation_token',
