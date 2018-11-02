@@ -2,7 +2,7 @@ dj-database-url==0.4.0
 Django==1.9.2
 gunicorn==19.4.5
 whitenoise==2.0.6
-requests==2.10.0
+requests==2.20.0
 django-crispy-forms
 django-import-export
 xlwt
